@@ -24,6 +24,7 @@ public class StatsClient {
 
         return post(url + "/hit", endpointHit);
     }
+
     public ResponseEntity<Object> getStats(String start, String end, List<String> uris, Boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
