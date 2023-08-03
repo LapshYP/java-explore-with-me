@@ -10,5 +10,6 @@ import java.util.List;
 @Service
 public interface StatsService {
     EndpointHitDto saveStats(EndpointHitDto dto);
+
     List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 }
