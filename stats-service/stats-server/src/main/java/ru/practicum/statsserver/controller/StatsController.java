@@ -9,6 +9,7 @@ import ru.practicum.statsdto.EndpointHitDto;
 import ru.practicum.statsdto.ViewStatsDto;
 import ru.practicum.statsserver.service.StatsService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public ResponseEntity<EndpointHitDto> saveStats(@RequestBody EndpointHitDto endpointHitDto) {
+    public ResponseEntity<EndpointHitDto> saveStats(@Valid @RequestBody EndpointHitDto endpointHitDto) {
 
         return new ResponseEntity<>(statsService.saveStats(endpointHitDto), HttpStatus.CREATED);
     }
