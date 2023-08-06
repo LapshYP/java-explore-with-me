@@ -2,6 +2,7 @@ package ru.practicum.ewmservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import ru.practicum.statsclient.StatsClient;
 import ru.practicum.statsdto.EndpointHitDto;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 @Service
 @RequiredArgsConstructor
 public class ServiceEwn {
-    private final StatsClient client;
+    private final StatsClient client = new StatsClient(new RestTemplate());
 
     public int getSmth() {
 

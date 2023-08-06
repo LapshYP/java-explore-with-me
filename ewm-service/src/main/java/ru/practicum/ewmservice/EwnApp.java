@@ -8,6 +8,6 @@ public class EwnApp {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(EwnApp.class);
+         SpringApplication.run(EwnApp.class);
     }
 }

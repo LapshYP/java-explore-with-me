@@ -17,7 +17,7 @@ import java.util.Map;
 public class StatsClient {
 
     @Value("${STATS.SERVICE.URL}")
-    private String url;
+    private String url = "http://localhost:9090";
     private final RestTemplate restTemplate;
 
     public ResponseEntity<Object> saveStats(EndpointHitDto endpointHit) {
