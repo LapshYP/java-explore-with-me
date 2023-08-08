@@ -1,19 +1,19 @@
 package ru.practicum.ewmservice.user.service;
 
 
-import ru.practicum.ewmservice.user.dto.UserDTO;
+import ru.practicum.ewmservice.user.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
-    UserDTO createUserSerivce(UserDTO userDTO);
+    UserDto createUserSerivce(UserDto userDTO);
 
-    List<UserDTO> getAll();
+    List<UserDto> getAll();
 
-    UserDTO updateUserService(UserDTO userDTO, Long userId);
+    UserDto updateUserService(UserDto userDTO, Long userId);
 
-    UserDTO deleteUserService(Long userId);
+    UserDto deleteUserService(Long userId);
 
-    UserDTO getUserSerivece(Long userId);
+    UserDto getUserSerivece(Long userId);
 
 }

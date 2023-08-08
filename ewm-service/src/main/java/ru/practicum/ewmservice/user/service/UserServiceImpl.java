@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.exception.BadRequestException;
 import ru.practicum.ewmservice.exception.NotFoundException;
-import ru.practicum.ewmservice.user.dto.UserDTO;
+import ru.practicum.ewmservice.user.dto.UserDto;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
 
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public UserDTO createUserSerivce(UserDTO userDTO) {
+    public UserDto createUserSerivce(UserDto userDTO) {
         User user = mapper.map(userDTO, User.class);
         validateUser(user);
         if (user.getName().length()<2 || user.getName().length()>250) {
@@ -47,15 +47,15 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException(HttpStatus.BAD_REQUEST,"Email field must be >6 and <64");}
         User savedUser = userRepoJpa.save(user);
         log.debug("Пользователь с email = {} и именем {} добавлен", user.getEmail(), user.getName());
-        UserDTO savedUserDTO = mapper.map(savedUser, UserDTO.class);
-        return savedUserDTO;
+        UserDto savedUserDto = mapper.map(savedUser, UserDto.class);
+        return savedUserDto;
     }
 
     @Override
-    public List<UserDTO> getAll() {
+    public List<UserDto> getAll() {
         return userRepoJpa.findAll().stream()
                 .map(user -> {
-                    return mapper.map(user, UserDTO.class);
+                    return mapper.map(user, UserDto.class);
                 })
                 .collect(Collectors.toList());
     }
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @SneakyThrows
     @Override
     @Transactional
-    public UserDTO updateUserService(UserDTO userDTO, Long userId) {
+    public UserDto updateUserService(UserDto userDTO, Long userId) {
         User user = mapper.map(userDTO, User.class);
         User updatedUser = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         if (user.getName() != null) {
@@ -79,23 +79,23 @@ public class UserServiceImpl implements UserService {
         validateUser(updatedUser);
         userRepoJpa.save(updatedUser);
         log.debug("Пользователь с email = {} и именем {} обновлен", user.getEmail(), user.getName());
-        UserDTO updatedUserDTO = mapper.map(updatedUser, UserDTO.class);
-        return updatedUserDTO;
+        UserDto updatedUserDto = mapper.map(updatedUser, UserDto.class);
+        return updatedUserDto;
     }
 
     @Override
-    public UserDTO deleteUserService(Long userId) {
+    public UserDto deleteUserService(Long userId) {
         User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
-        UserDTO userDTO = mapper.map(user, UserDTO.class);
+        UserDto userDTO = mapper.map(user, UserDto.class);
         userRepoJpa.deleteById(userId);
         log.debug("Пользователь с userId = {} удален", userId);
         return userDTO;
     }
 
     @Override
-    public UserDTO getUserSerivece(Long userId) {
+    public UserDto getUserSerivece(Long userId) {
         User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
-        UserDTO userDTO = mapper.map(user, UserDTO.class);
+        UserDto userDTO = mapper.map(user, UserDto.class);
         log.debug("Пользователь с userId = {} просмотрен", userId);
         return userDTO;
     }

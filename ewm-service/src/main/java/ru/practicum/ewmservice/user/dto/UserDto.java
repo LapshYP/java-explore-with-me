@@ -13,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserDTO {
+public class UserDto {
     Long id;
     String name;
     String email;
@@ -21,8 +21,8 @@ public class UserDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserDTO)) return false;
-        UserDTO userDTO = (UserDTO) o;
+        if (!(o instanceof UserDto)) return false;
+        UserDto userDTO = (UserDto) o;
         return Objects.equals(getName(), userDTO.getName()) && Objects.equals(getEmail(), userDTO.getEmail());
     }
 

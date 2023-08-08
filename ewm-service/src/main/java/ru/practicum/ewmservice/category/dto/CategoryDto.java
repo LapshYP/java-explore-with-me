@@ -13,15 +13,15 @@ import java.util.Objects;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CategoryDTO {
+public class CategoryDto {
     Long id;
     String name;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CategoryDTO)) return false;
-        CategoryDTO that = (CategoryDTO) o;
+        if (!(o instanceof CategoryDto)) return false;
+        CategoryDto that = (CategoryDto) o;
         return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName());
     }
 

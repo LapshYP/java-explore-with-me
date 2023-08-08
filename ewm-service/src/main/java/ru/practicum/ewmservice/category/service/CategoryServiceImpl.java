@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewmservice.category.dto.CategoryDTO;
+import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.category.repository.CategoryRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @SneakyThrows
     @Override
-    public CategoryDTO create(CategoryDTO categoryDTO) {
+    public CategoryDto create(CategoryDto categoryDTO) {
         Category category = mapper.map(categoryDTO, Category.class);
         validateUser(category);
         if (category.getName().length() > 50) {
@@ -49,22 +49,22 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category savedCategory = categoryRepoJpa.save(category);
         log.debug("Категория с именем {} добавлена", category.getName());
-        CategoryDTO savedCategoryDTO = mapper.map(savedCategory, CategoryDTO.class);
-        return savedCategoryDTO;
+        CategoryDto savedCategoryDto = mapper.map(savedCategory, CategoryDto.class);
+        return savedCategoryDto;
     }
 
     @Override
-    public List<CategoryDTO> getAll(int from, int size) {
+    public List<CategoryDto> getAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         return categoryRepoJpa.findAll(pageable).stream().map(category -> {
-            return mapper.map(category, CategoryDTO.class);
+            return mapper.map(category, CategoryDto.class);
         }).collect(Collectors.toList());
     }
 
     @SneakyThrows
     @Override
     @Transactional
-    public CategoryDTO update(CategoryDTO categoryDTO, Long catId) {
+    public CategoryDto update(CategoryDto categoryDTO, Long catId) {
         Category category = mapper.map(categoryDTO, Category.class);
         Category updatedCategory = categoryRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
         if (category.getName() != null) {
@@ -77,23 +77,23 @@ public class CategoryServiceImpl implements CategoryService {
         validateUser(updatedCategory);
         categoryRepoJpa.save(updatedCategory);
         log.debug("Категория с именем {} обновлена", category.getName());
-        CategoryDTO updatedCategoryDTO = mapper.map(updatedCategory, CategoryDTO.class);
-        return updatedCategoryDTO;
+        CategoryDto updatedCategoryDto = mapper.map(updatedCategory, CategoryDto.class);
+        return updatedCategoryDto;
     }
 
     @Override
-    public CategoryDTO delete(Long catId) {
+    public CategoryDto delete(Long catId) {
         Category category = categoryRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
-        CategoryDTO categoryDTO = mapper.map(category, CategoryDTO.class);
+        CategoryDto categoryDTO = mapper.map(category, CategoryDto.class);
         categoryRepoJpa.deleteById(catId);
         log.debug("Категория с categoryId = {} удалена", catId);
         return categoryDTO;
     }
 
     @Override
-    public CategoryDTO get(Long catId) {
+    public CategoryDto get(Long catId) {
         Category category = categoryRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Категория с id = '" + catId + "' не найдена"));
-        CategoryDTO categoryDTO = mapper.map(category, CategoryDTO.class);
+        CategoryDto categoryDTO = mapper.map(category, CategoryDto.class);
         log.debug("Категория с categoryId = {} просмотрена", catId);
         return categoryDTO;
     }
