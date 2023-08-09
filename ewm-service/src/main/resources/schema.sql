@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS events
     state               VARCHAR(128),
     title               VARCHAR(512)                            NOT NULL,
     views               BIGINT,
+    request               BIGINT,
     CONSTRAINT pk_item PRIMARY KEY (id),
     CONSTRAINT fk_events_initiator FOREIGN KEY (initiator_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_events_category FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE

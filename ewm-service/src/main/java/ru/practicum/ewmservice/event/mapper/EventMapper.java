@@ -1,0 +1,40 @@
+package ru.practicum.ewmservice.event.mapper;
+
+
+import lombok.experimental.UtilityClass;
+import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.model.Event;
+import ru.practicum.ewmservice.event.model.Location;
+import ru.practicum.ewmservice.event.model.State;
+
+import java.time.LocalDateTime;
+
+
+@UtilityClass
+public class EventMapper {
+
+    public static Event toEntity(EventDto dto) {
+
+        return Event.builder()
+                .annotation(dto.getAnnotation())
+                .createdOn(LocalDateTime.now())
+                .description(dto.getDescription())
+                .date(dto.getEventDate())
+                .location(new Location(dto.getLocation().getLat(), dto.getLocation().getLon()))
+                .paid(dto.isPaid())
+                .participantLimit(dto.getParticipantLimit())
+                .requestModeration(dto.isRequestModeration())
+                .state(State.PENDING)
+                .title(dto.getTitle())
+                .request(dto.getRequestId())
+                .build();
+//    public static EndpointHitDto toDto(EndpointHit entity) {
+//        return EndpointHitDto.builder()
+//                .id(entity.getId())
+//                .app(entity.getApp())
+//                .ip(entity.getIp())
+//                .uri(entity.getUri())
+//                .timestamp(entity.getTimestamp())
+//                .build();
+    }
+}
