@@ -15,7 +15,6 @@ import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.model.Compilation;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepoJpa;
 import ru.practicum.ewmservice.event.dto.EventDto;
-import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
 import ru.practicum.ewmservice.exception.NotFoundException;
@@ -71,10 +70,10 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public List<CompilationDto> getAll(int from, int size) {
+    public List<CompilationWithEventsDto> getAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         return compilationRepoJpa.findAll(pageable).stream().map(compilation -> {
-            return mapper.map(compilation, CompilationDto.class);
+            return mapper.map(compilation, CompilationWithEventsDto.class);
         }).collect(Collectors.toList());
     }
 

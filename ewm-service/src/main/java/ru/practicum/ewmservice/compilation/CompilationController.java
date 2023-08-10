@@ -39,7 +39,7 @@ public class CompilationController {
     }
 
     @GetMapping(path = "/compilations")
-    public List<CompilationDto> getAll(@RequestParam(name = "from", defaultValue = "0") int from,
+    public List<CompilationWithEventsDto> getAll(@RequestParam(name = "from", defaultValue = "0") int from,
                                        @RequestParam(name = "size", defaultValue = "10") int size) {
         return compilationService.getAll(from,size);
     }

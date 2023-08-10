@@ -9,7 +9,7 @@ import java.util.List;
 public interface CompilationService {
     CompilationWithEventsDto create (CompilationDto compilationDTO);
 
-    List<CompilationDto> getAll(int from, int size);
+    List<CompilationWithEventsDto> getAll(int from, int size);
 
     CompilationDto update(CompilationDto compilationDTO, Long compId);
 
