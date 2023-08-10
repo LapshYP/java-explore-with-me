@@ -3,8 +3,6 @@ package ru.practicum.ewmservice.compilation.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.modelmapper.ModelMapper;
-import ru.practicum.ewmservice.compilation.dto.CompilationWithEventsDto;
-import ru.practicum.ewmservice.compilation.model.Compilation;
 
 
 @UtilityClass

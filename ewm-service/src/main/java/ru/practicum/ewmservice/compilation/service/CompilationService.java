@@ -2,19 +2,19 @@ package ru.practicum.ewmservice.compilation.service;
 
 
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
-import ru.practicum.ewmservice.compilation.dto.CompilationWithEventsDto;
+import ru.practicum.ewmservice.compilation.dto.CompilationWithIdAndEventsDto;
 
 import java.util.List;
 
 public interface CompilationService {
-    CompilationWithEventsDto create (CompilationDto compilationDTO);
+    CompilationWithIdAndEventsDto create (CompilationDto compilationDTO);
 
-    List<CompilationWithEventsDto> getAll(int from, int size);
+    List<CompilationWithIdAndEventsDto> getAll(int from, int size);
 
-    CompilationDto update(CompilationDto compilationDTO, Long compId);
+    CompilationDto update(CompilationDto compilationDto, Long compId);
 
     CompilationDto delete(Long compId);
 
-    CompilationDto get(Long compId);
+    CompilationWithIdAndEventsDto get(Long compId);
 
 }
