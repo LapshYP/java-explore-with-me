@@ -5,8 +5,6 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
@@ -21,11 +19,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "Поле имя не должно быть пустым")
+    @NotEmpty(message = "must not be empty")
     @Column
     private String name;
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
-    @NotEmpty(message = "Emailне должно быть пустым")
+    @NotEmpty(message = "must not be empty")
     @Column
     private String email;
 
