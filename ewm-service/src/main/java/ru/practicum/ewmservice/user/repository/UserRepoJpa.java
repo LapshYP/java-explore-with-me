@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.user.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.ewmservice.user.model.User;
 
@@ -12,4 +13,5 @@ public interface UserRepoJpa extends JpaRepository<User, Long> {
     List<User> findByIdAndEmail(Long id, String email);
 
 
+    List<User> findAllByIdIn(List<Long> ids, Pageable pageable);
 }

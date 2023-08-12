@@ -6,9 +6,9 @@ import ru.practicum.ewmservice.user.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    UserDto createUserSerivce(UserDto userDTO);
+    UserDto create(UserDto userDTO);
 
-    List<UserDto> getAll();
+    List<UserDto> getAll(List<Long> ids,  int from, int size);
 
     UserDto updateUserService(UserDto userDTO, Long userId);
 

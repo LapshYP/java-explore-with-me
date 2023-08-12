@@ -3,6 +3,7 @@ package ru.practicum.ewmservice.user.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 
 @Data
@@ -14,6 +15,7 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class UserDto {
+
     Long id;
     String name;
     String email;

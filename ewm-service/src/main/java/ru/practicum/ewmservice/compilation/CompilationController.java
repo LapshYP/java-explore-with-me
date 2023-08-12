@@ -8,6 +8,7 @@ import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.CompilationWithIdAndEventsDto;
 import ru.practicum.ewmservice.compilation.service.CompilationService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class CompilationController {
     }
 
     @PatchMapping("/admin/compilations/{compId}")
-    public CompilationDto update(@RequestBody CompilationDto compilationDto,
+    public CompilationDto update(@RequestBody @Valid CompilationDto compilationDto,
                                  @PathVariable Long compId) {
         return compilationService.update(compilationDto, compId);
     }

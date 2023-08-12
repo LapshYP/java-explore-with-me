@@ -3,6 +3,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public UserDto createUserSerivce(UserDto userDTO) {
+    public UserDto create(UserDto userDTO) {
         User user = mapper.map(userDTO, User.class);
         validateUser(user);
         if (user.getName().length()<2 || user.getName().length()>250) {
@@ -52,8 +55,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll() {
-        return userRepoJpa.findAll().stream()
+    public List<UserDto> getAll(List<Long> ids, int from, int size) {
+        if (ids != null) {  ids =  ids.stream().filter(aLong -> aLong>0).collect(Collectors.toList());}
+
+        List<User> users;
+        Pageable pageable = PageRequest.of(from / size, size,Sort.by(Sort.Direction.ASC, "id"));
+
+
+        if (ids == null || ids.size()==0) {
+            users = userRepoJpa.findAll(pageable).toList();
+        } else {
+            users = userRepoJpa.findAllByIdIn(ids, pageable);
+        }
+        return users.stream()
                 .map(user -> {
                     return mapper.map(user, UserDto.class);
                 })

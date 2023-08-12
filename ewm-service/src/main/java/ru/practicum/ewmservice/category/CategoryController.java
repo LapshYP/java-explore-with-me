@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.category.service.CategoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class CategoryController {
     }
 
     @PatchMapping("/admin/categories/{catId}")
-    public CategoryDto update(@RequestBody CategoryDto categoryDTO, @PathVariable Long catId) {
+    public CategoryDto update(@RequestBody @Valid CategoryDto categoryDTO, @PathVariable Long catId) {
         return categoryService.update(categoryDTO, catId);
     }
 
