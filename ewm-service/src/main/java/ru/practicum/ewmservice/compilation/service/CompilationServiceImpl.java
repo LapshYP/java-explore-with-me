@@ -14,11 +14,14 @@ import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.model.Compilation;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepoJpa;
 import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
 import ru.practicum.ewmservice.exception.NotFoundException;
 
 import javax.validation.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     private final CompilationRepoJpa compilationRepoJpa;
+
     private final EventRepoJpa eventRepoJpa;
     private CompilationMapper compilationMapper;
 
@@ -53,17 +57,27 @@ public class CompilationServiceImpl implements CompilationService {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
         }
 
+        List<Event> events = new ArrayList<>();
+        if (compilationDTO.getEvents() != null && !compilationDTO.getEvents().isEmpty()) {
+            events = eventRepoJpa.findAllById(compilationDTO.getEvents());
+        }
+
+        Set<Event> eventSet = new HashSet<>(events);
+
+        compilation.setEvents(eventSet);
         compilation.setPinned(false);
+
         Compilation savedCompilation = compilationRepoJpa.save(compilation);
         log.debug("Подборка с именем {} добавлена", compilation.getTitle());
 
         CompilationWithIdAndEventsDto savedCompilationDto = mapper.map(savedCompilation, CompilationWithIdAndEventsDto.class);
         //     CompilationWithEventsDto savedCompilationDto = compilationMapper.toDto(savedCompilation);
-        if (compilationDTO.getEvents() != null) {
-            Set<Long> longs = compilationDTO.getEvents();
-            Set<EventDto> events = longs.stream().map(id -> eventRepoJpa.findById(id).get()).map((element) -> modelMapper.map(element, EventDto.class)).collect(Collectors.toSet());
-            savedCompilationDto.setEvents(events);
-        }
+//        if (compilationDTO.getEvents() != null) {
+//            Set<Long> longs = compilationDTO.getEvents();
+//            Set<EventDto> events = longs.stream().map(id -> eventRepoJpa.findById(id).get()).map((element) -> modelMapper.map(element, EventDto.class)).collect(Collectors.toSet());
+//            savedCompilationDto.setEvents(events);
+//
+//        }
 
         return savedCompilationDto;
     }
@@ -85,24 +99,49 @@ public class CompilationServiceImpl implements CompilationService {
         if (compilation.getTitle() != null) {
             updatedCompilation.setTitle(compilation.getTitle());
         }
-        if (compilation.getTitle().length() > 50) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
+        if (compilation.getTitle() != null) {
+            if (compilation.getTitle().length() > 50 ) {
+                throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
+            }
         }
-        updatedCompilation.setId(catId);
+        if (compilation.getPinned() != null) {
+            updatedCompilation.setPinned(compilation.getPinned());
+        }
+
+
+        List<Event> events = new ArrayList<>();
+        if (compilationWithEventsDto.getEvents() != null && !compilationWithEventsDto.getEvents().isEmpty()) {
+            events = eventRepoJpa.findAllById(compilationWithEventsDto.getEvents());
+        }
+
+        Set<Event> eventSet = new HashSet<>(events);
+
+        updatedCompilation.setEvents(eventSet);
+
+//        updatedCompilation.setId(catId);
         validateUser(updatedCompilation);
-        compilationRepoJpa.save(updatedCompilation);
+        Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка с именем {} обновлена", compilation.getTitle());
-        CompilationDto updatedCompilationDto = mapper.map(updatedCompilation, CompilationDto.class);
-        return updatedCompilationDto;
+      //  CompilationDto updatedCompilationDto = mapper.map(updatedCompilation, CompilationDto.class);
+        return new CompilationDto().builder()
+                .id(saveCompilation.getId())
+                .title(saveCompilation.getTitle())
+                .pinned(saveCompilation.getPinned())
+                .events(compilationWithEventsDto.getEvents())
+                .build();
     }
 
     @Override
     public CompilationDto delete(Long catId) {
-        Compilation compilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
-        CompilationDto compilationDTO = mapper.map(compilation, CompilationDto.class);
+        Compilation saveCompilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
+      //  CompilationDto compilationDTO = mapper.map(compilation, CompilationDto.class);
         compilationRepoJpa.deleteById(catId);
         log.debug("Категория с categoryId = {} удалена", catId);
-        return compilationDTO;
+        return new CompilationDto().builder()
+                .id(saveCompilation.getId())
+                .title(saveCompilation.getTitle())
+                .pinned(saveCompilation.getPinned())
+                .build();
     }
 
     @Override

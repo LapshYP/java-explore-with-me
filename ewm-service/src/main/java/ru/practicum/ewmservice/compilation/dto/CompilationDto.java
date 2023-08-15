@@ -14,7 +14,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class CompilationDto {
-    int id;
+    Long id;
     String title;
     Boolean pinned;
      Set<Long> events;

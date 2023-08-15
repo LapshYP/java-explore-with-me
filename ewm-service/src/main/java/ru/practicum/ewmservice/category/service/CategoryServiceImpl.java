@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.category.repository.CategoryRepoJpa;
+import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
 import ru.practicum.ewmservice.exception.NotFoundException;
+import ru.practicum.ewmservice.exception.ConflictException;
 
 import javax.validation.*;
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+    private final EventRepoJpa eventRepoJpa;
 
     private final CategoryRepoJpa categoryRepoJpa;
 
@@ -85,6 +88,9 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto delete(Long catId) {
         Category category = categoryRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
         CategoryDto categoryDTO = mapper.map(category, CategoryDto.class);
+        if (eventRepoJpa.findByCategoryId(catId).size()>0) {
+            throw new ConflictException("Удаление категории с привязанными событиями");
+        }
         categoryRepoJpa.deleteById(catId);
         log.debug("Категория с categoryId = {} удалена", catId);
         return categoryDTO;

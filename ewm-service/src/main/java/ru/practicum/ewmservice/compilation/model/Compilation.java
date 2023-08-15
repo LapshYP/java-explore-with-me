@@ -7,6 +7,7 @@ import ru.practicum.ewmservice.event.model.Event;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -20,21 +21,18 @@ import java.util.Set;
 public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   Long id;
+    Long id;
     @NotEmpty(message = "must not be empty")
     @NotBlank(message = "must not be blank")
     @Column
-   String title;
+    String title;
     @Column
-  Boolean pinned;
-    @ManyToMany(fetch = FetchType.LAZY)
+    Boolean pinned;
+
+    @ManyToMany
     @JoinTable(name = "events_compilations",
-            joinColumns = @JoinColumn(name = "compilation_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id"))
-    Set<Event> events;
-//    @OneToMany(mappedBy = "owner")
-//    private List<Item> items;
-//    @OneToMany(mappedBy = "booker")
-//    private List<Booking> bookings;
+            joinColumns = @JoinColumn(name = "compilation_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
+    Set<Event> events ;
 
 }

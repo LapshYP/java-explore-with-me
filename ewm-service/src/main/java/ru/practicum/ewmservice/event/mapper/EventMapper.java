@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.event.dto.EventDto;
 import ru.practicum.ewmservice.event.dto.EventNewDto;
-import ru.practicum.ewmservice.event.dto.ParticipationRequestDto;
 import ru.practicum.ewmservice.event.dto.LocationDto;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.Location;
@@ -34,14 +33,14 @@ public class EventMapper {
                 .requestModeration(dto.isRequestModeration())
                 .state(State.PENDING)
                 .title(dto.getTitle())
-                .requestModeration(true)
+//                .requestModeration(true)
                 .publishedOn(LocalDateTime.now())
                 .request(dto.getRequestId())
                 //   .category(new Category(15L,"without category"))
                 .build();
     }
 
-    public static EventDto toEventFullDto(Event entity) {
+    public static EventDto toEventDto(Event entity) {
         Float lat = entity.getLocation().getLat();
         Float lon = entity.getLocation().getLon();
         return EventDto.builder()
