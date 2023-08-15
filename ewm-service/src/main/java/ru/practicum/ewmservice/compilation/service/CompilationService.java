@@ -15,6 +15,6 @@ public interface CompilationService {
 
     CompilationDto delete(Long compId);
 
-    CompilationWithIdAndEventsDto get(Long compId);
+    CompilationWithIdAndEventsDto getCompilations(Long compId);
 
 }

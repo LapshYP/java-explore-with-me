@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category savedCategory = categoryRepoJpa.save(category);
-        log.debug("Категория с именем {} добавлена", category.getName());
+        log.debug("create, id ={}, name = {}", category.getId(),category.getName());
         CategoryDto savedCategoryDto = mapper.map(savedCategory, CategoryDto.class);
         return savedCategoryDto;
     }
@@ -59,6 +59,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDto> getAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
+
+        log.debug("данные в методе getAll запрошены, from ={}, size = {}", from,size);
+
         return categoryRepoJpa.findAll(pageable).stream().map(category -> {
             return mapper.map(category, CategoryDto.class);
         }).collect(Collectors.toList());
@@ -79,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
         updatedCategory.setId(catId);
         validateUser(updatedCategory);
         categoryRepoJpa.save(updatedCategory);
-        log.debug("Категория с именем {} обновлена", category.getName());
+        log.debug("Категория обновлена id = {}, name = {}",category.getId(), category.getName());
         CategoryDto updatedCategoryDto = mapper.map(updatedCategory, CategoryDto.class);
         return updatedCategoryDto;
     }
@@ -92,15 +95,15 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ConflictException("Удаление категории с привязанными событиями");
         }
         categoryRepoJpa.deleteById(catId);
-        log.debug("Категория с categoryId = {} удалена", catId);
+        log.debug("Категория удалена, categoryId = {} ", catId);
         return categoryDTO;
     }
 
     @Override
-    public CategoryDto get(Long catId) {
+    public CategoryDto getCategories(Long catId) {
         Category category = categoryRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Категория с id = '" + catId + "' не найдена"));
         CategoryDto categoryDTO = mapper.map(category, CategoryDto.class);
-        log.debug("Категория с categoryId = {} просмотрена", catId);
+        log.debug("Категория просмотрена, categoryId = {}  ", catId);
         return categoryDTO;
     }
 }

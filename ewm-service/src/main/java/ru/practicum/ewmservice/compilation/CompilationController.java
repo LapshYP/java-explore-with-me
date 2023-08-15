@@ -21,6 +21,7 @@ public class CompilationController {
 // compilationDTO ={"title":"Ut eos est cum doloremque sit ipsam animi nam.","pinned":"true","events":[18]}
     @PostMapping(path = "/admin/compilations")
     public ResponseEntity <CompilationWithIdAndEventsDto> create(@RequestBody CompilationDto compilationDTO) {
+        log.info("create POST /admin/compilations , compilationDTO = {}", compilationDTO);
 
         return new ResponseEntity(compilationService.create(compilationDTO), HttpStatus.CREATED);
     }
@@ -29,23 +30,28 @@ public class CompilationController {
     @PatchMapping("/admin/compilations/{compId}")
     public CompilationDto update(@RequestBody @Valid CompilationDto compilationDto,
                                  @PathVariable Long compId) {
+        log.info("update PATCH /admin/compilations/{compId} , compilationDTO = {}, compId = {}", compilationDto,compId);
         return compilationService.update(compilationDto, compId);
     }
 
     @DeleteMapping("/admin/compilations/{compId}")
     public ResponseEntity<CompilationDto> delete(@PathVariable Long compId) {
+        log.info("delete DELETE /admin/compilations/{compId}, compId = {}", compId);
 
         return new ResponseEntity(compilationService.delete(compId), HttpStatus.valueOf(204));
     }
 
     @GetMapping("/compilations/{catId}")
-    public CompilationWithIdAndEventsDto get(@PathVariable Long catId) {
-        return compilationService.get(catId);
+    public CompilationWithIdAndEventsDto getCompilations(@PathVariable Long catId) {
+        log.info("getCompilations GET compilations/{catId}, compId = {}", catId);
+        return compilationService.getCompilations(catId);
     }
 
     @GetMapping(path = "/compilations")
     public List<CompilationWithIdAndEventsDto> getAll(@RequestParam(name = "from", defaultValue = "0") int from,
                                                       @RequestParam(name = "size", defaultValue = "10") int size) {
+        log.info("getAll GET /compilations, from = {}, size = {}", from,size);
+
         return compilationService.getAll(from, size);
     }
 }

@@ -14,6 +14,6 @@ public interface CategoryService {
 
     CategoryDto delete(Long categoryId);
 
-    CategoryDto get(Long categoryId);
+    CategoryDto getCategories(Long categoryId);
 
 }

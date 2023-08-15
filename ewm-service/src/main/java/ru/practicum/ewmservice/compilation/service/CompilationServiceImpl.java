@@ -52,9 +52,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationWithIdAndEventsDto create(CompilationDto compilationDTO) {
         Compilation compilation = mapper.map(compilationDTO, Compilation.class);
-        validateUser(compilation);
+        if (compilation.getTitle()== null) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Title field equal null");
+        }
         if (compilation.getTitle().length() > 50) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Title field must be <50");
         }
 
         List<Event> events = new ArrayList<>();
@@ -67,17 +69,12 @@ public class CompilationServiceImpl implements CompilationService {
         compilation.setEvents(eventSet);
         compilation.setPinned(false);
 
+        validateUser(compilation);
         Compilation savedCompilation = compilationRepoJpa.save(compilation);
-        log.debug("Подборка с именем {} добавлена", compilation.getTitle());
+        log.debug("Подборка добавлена,  id ={}  ", compilation.getId());
 
         CompilationWithIdAndEventsDto savedCompilationDto = mapper.map(savedCompilation, CompilationWithIdAndEventsDto.class);
-        //     CompilationWithEventsDto savedCompilationDto = compilationMapper.toDto(savedCompilation);
-//        if (compilationDTO.getEvents() != null) {
-//            Set<Long> longs = compilationDTO.getEvents();
-//            Set<EventDto> events = longs.stream().map(id -> eventRepoJpa.findById(id).get()).map((element) -> modelMapper.map(element, EventDto.class)).collect(Collectors.toSet());
-//            savedCompilationDto.setEvents(events);
-//
-//        }
+
 
         return savedCompilationDto;
     }
@@ -85,6 +82,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public List<CompilationWithIdAndEventsDto> getAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
+        log.debug("getAll,  from ={}, size ={}  ",  from, size);
         return compilationRepoJpa.findAll(pageable).stream().map(compilation -> {
             return mapper.map(compilation, CompilationWithIdAndEventsDto.class);
         }).collect(Collectors.toList());
@@ -121,7 +119,7 @@ public class CompilationServiceImpl implements CompilationService {
 //        updatedCompilation.setId(catId);
         validateUser(updatedCompilation);
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
-        log.debug("Подборка с именем {} обновлена", compilation.getTitle());
+        log.debug("Подборка обновлена, id = {} ", compilation.getId());
       //  CompilationDto updatedCompilationDto = mapper.map(updatedCompilation, CompilationDto.class);
         return new CompilationDto().builder()
                 .id(saveCompilation.getId())
@@ -136,7 +134,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation saveCompilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
       //  CompilationDto compilationDTO = mapper.map(compilation, CompilationDto.class);
         compilationRepoJpa.deleteById(catId);
-        log.debug("Категория с categoryId = {} удалена", catId);
+        log.debug("Категория удалена, catId  = {} ", catId);
         return new CompilationDto().builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
@@ -145,10 +143,10 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationWithIdAndEventsDto get(Long catId) {
+    public CompilationWithIdAndEventsDto getCompilations(Long catId) {
         Compilation compilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Категория с id = '" + catId + "' не найдена"));
         CompilationWithIdAndEventsDto compilationDTO = mapper.map(compilation, CompilationWithIdAndEventsDto.class);
-        log.debug("Категория с categoryId = {} просмотрена", catId);
+        log.debug("Категория просмотрена, catId= {}  ", catId);
         return compilationDTO;
     }
 }

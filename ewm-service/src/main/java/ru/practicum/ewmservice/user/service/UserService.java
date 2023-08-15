@@ -10,10 +10,10 @@ public interface UserService {
 
     List<UserDto> getAll(List<Long> ids,  int from, int size);
 
-    UserDto updateUserService(UserDto userDTO, Long userId);
+    UserDto updateUser(UserDto userDTO, Long userId);
 
-    UserDto deleteUserService(Long userId);
+    UserDto deleteUser(Long userId);
 
-    UserDto getUserSerivece(Long userId);
+    UserDto getUser(Long userId);
 
 }

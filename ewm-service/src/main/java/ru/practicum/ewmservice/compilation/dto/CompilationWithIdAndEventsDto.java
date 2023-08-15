@@ -3,6 +3,7 @@ package ru.practicum.ewmservice.compilation.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.ewmservice.event.dto.EventDto;
+import ru.practicum.ewmservice.event.dto.EventShortDto;
 
 
 import java.util.Set;
@@ -16,8 +17,8 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class CompilationWithIdAndEventsDto {
-    int id;
+    Long id;
     String title;
     Boolean pinned;
-     Set<EventDto> events;
+     Set<EventShortDto> events;
 }

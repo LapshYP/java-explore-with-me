@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail().length()<6 || user.getEmail().length()>254) {
             throw new BadRequestException(HttpStatus.BAD_REQUEST,"Email field must be >6 and <64");}
         User savedUser = userRepoJpa.save(user);
-        log.debug("Пользователь с email = {} и именем {} добавлен", user.getEmail(), user.getName());
+        log.debug("Пользователь создан, id = {} , name= {}", user.getId(), user.getName());
         UserDto savedUserDto = mapper.map(savedUser, UserDto.class);
         return savedUserDto;
     }
@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
         } else {
             users = userRepoJpa.findAllByIdIn(ids, pageable);
         }
+        log.debug("getAll,ids = {}, from = {} , size= {}", ids , from, size);
         return users.stream()
                 .map(user -> {
                     return mapper.map(user, UserDto.class);
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @SneakyThrows
     @Override
     @Transactional
-    public UserDto updateUserService(UserDto userDTO, Long userId) {
+    public UserDto updateUser(UserDto userDTO, Long userId) {
         User user = mapper.map(userDTO, User.class);
         User updatedUser = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         if (user.getName() != null) {
@@ -92,25 +93,25 @@ public class UserServiceImpl implements UserService {
         updatedUser.setId(userId);
         validateUser(updatedUser);
         userRepoJpa.save(updatedUser);
-        log.debug("Пользователь с email = {} и именем {} обновлен", user.getEmail(), user.getName());
+        log.debug("Пользователь обновлен,  id = {}, name= {} обновлен", user.getId(), user.getName());
         UserDto updatedUserDto = mapper.map(updatedUser, UserDto.class);
         return updatedUserDto;
     }
 
     @Override
-    public UserDto deleteUserService(Long userId) {
+    public UserDto deleteUser(Long userId) {
         User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         UserDto userDTO = mapper.map(user, UserDto.class);
         userRepoJpa.deleteById(userId);
-        log.debug("Пользователь с userId = {} удален", userId);
+        log.debug("Пользователь удален, userId = {} ", userId);
         return userDTO;
     }
 
     @Override
-    public UserDto getUserSerivece(Long userId) {
+    public UserDto getUser(Long userId) {
         User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         UserDto userDTO = mapper.map(user, UserDto.class);
-        log.debug("Пользователь с userId = {} просмотрен", userId);
+        log.debug("Пользователь просмотрен, userId = {}  ", userId);
         return userDTO;
     }
 }
