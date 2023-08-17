@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class EventRequestStatusUpdateResult {
     List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
     List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
