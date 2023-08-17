@@ -64,9 +64,11 @@ public class CompilationServiceImpl implements CompilationService {
             events = eventRepoJpa.findAllById(compilationDTO.getEvents());
         }
 
-        Set<Event> eventSet = new HashSet<>(events);
-
-        compilation.setEvents(eventSet);
+//        Set<Event> eventSet = new HashSet<>();
+//        for (Event event : events) {
+//            eventSet.add(event);
+//        }
+        compilation.setEvents(events);
         compilation.setPinned(false);
 
         validateUser(compilation);
@@ -112,15 +114,15 @@ public class CompilationServiceImpl implements CompilationService {
             events = eventRepoJpa.findAllById(compilationWithEventsDto.getEvents());
         }
 
-        Set<Event> eventSet = new HashSet<>(events);
+//        Set<Event> eventSet = new HashSet<>(events);
 
-        updatedCompilation.setEvents(eventSet);
+        updatedCompilation.setEvents(events);
 
 //        updatedCompilation.setId(catId);
         validateUser(updatedCompilation);
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка обновлена, id = {} ", compilation.getId());
-      //  CompilationDto updatedCompilationDto = mapper.map(updatedCompilation, CompilationDto.class);
+        //  CompilationDto updatedCompilationDto = mapper.map(updatedCompilation, CompilationDto.class);
         return new CompilationDto().builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
@@ -132,7 +134,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto delete(Long catId) {
         Compilation saveCompilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
-      //  CompilationDto compilationDTO = mapper.map(compilation, CompilationDto.class);
+        //  CompilationDto compilationDTO = mapper.map(compilation, CompilationDto.class);
         compilationRepoJpa.deleteById(catId);
         log.debug("Категория удалена, catId  = {} ", catId);
         return new CompilationDto().builder()
