@@ -28,7 +28,7 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    public Page<Event> findAllWithFilters(Pageable pageable, EventSearchCriteria eventSearchCriteria) {
+    public Page<Event> findByParamFilters(Pageable pageable, EventSearchCriteria eventSearchCriteria) {
 
         CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
         Root<Event> eventRoot = criteriaQuery.from(Event.class);

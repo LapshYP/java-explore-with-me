@@ -11,5 +11,5 @@ import ru.practicum.ewmservice.event.model.EventSearchCriteria;
 @Repository
 public interface EventCriteriaRepository {
 
-    Page<Event> findAllWithFilters(Pageable pageable, EventSearchCriteria eventSearchCriteria);
+    Page<Event> findByParamFilters(Pageable pageable, EventSearchCriteria eventSearchCriteria);
 }
