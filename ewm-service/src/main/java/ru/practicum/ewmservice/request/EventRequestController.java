@@ -20,7 +20,7 @@ public class EventRequestController {
     @PostMapping("/users/{userId}/requests")
     ResponseEntity<RequestDto> create(@RequestParam(name = "eventId") Long eventId,
                                       @PathVariable("userId") Long userId) {
-        log.info("create POST /users/{userId}/requests, eventId = {}, userId = {}",  eventId,userId);
+        log.info("create POST /users/{userId}/requests, eventId = {}, userId = {}", eventId, userId);
         return new ResponseEntity<>(requestItemService.create(eventId, userId), HttpStatus.CREATED);
     }
 

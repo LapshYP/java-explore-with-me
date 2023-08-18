@@ -31,10 +31,12 @@ services:
     depends_on:
       - ewm-db
     environment:
+#      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-db
       - SPRING_DATASOURCE_USERNAME=ewm
       - SPRING_DATASOURCE_PASSWORD=ewm
-      - STATS_SERVICE_URL=http://stats-server:9090
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
+      - APP_STATS_URL=http://stats-server:9090
 
   ewm-db:
     image: postgres:13.7-alpine

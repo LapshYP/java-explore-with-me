@@ -110,14 +110,13 @@ public class CompilationServiceImpl implements CompilationService {
         validateUser(updatedCompilation);
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка обновлена, id = {} ", compilation.getId());
-        CompilationDto compilationDto;
-        compilationDto = CompilationDto.builder()
+
+        return CompilationDto.builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
                 .pinned(saveCompilation.getPinned())
                 .events(compilationWithEventsDto.getEvents())
                 .build();
-        return compilationDto;
     }
 
     @Override
@@ -126,13 +125,12 @@ public class CompilationServiceImpl implements CompilationService {
 
         compilationRepoJpa.deleteById(catId);
         log.debug("Категория удалена, catId  = {} ", catId);
-        CompilationDto compilationDto;
-        compilationDto = CompilationDto.builder()
+
+        return CompilationDto.builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
                 .pinned(saveCompilation.getPinned())
                 .build();
-        return compilationDto;
     }
 
     @Override

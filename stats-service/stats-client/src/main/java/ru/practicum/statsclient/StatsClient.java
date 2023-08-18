@@ -16,8 +16,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StatsClient {
 
-    @Value("${STATS.SERVICE.URL}")
-    private String url = "http://localhost:9090";
+    @Value("${app.stats.url:http://localhost:9090}")
+    private String url;
     private final RestTemplate restTemplate;
 
     public ResponseEntity<Object> saveStats(EndpointHitDto endpointHit) {

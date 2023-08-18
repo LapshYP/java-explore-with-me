@@ -28,10 +28,4 @@ public class User {
     @NotEmpty(message = "must not be empty")
     @Column
     private String email;
-
-//    @OneToMany(mappedBy = "owner")
-//    private List<Item> items;
-//    @OneToMany(mappedBy = "booker")
-//    private List<Booking> bookings;
-
 }

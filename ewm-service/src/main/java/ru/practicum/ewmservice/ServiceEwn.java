@@ -21,7 +21,7 @@ public class ServiceEwn {
     }
 
     public int postSmth() {
-        EndpointHitDto endpointHit = new EndpointHitDto().builder()
+        EndpointHitDto endpointHit = EndpointHitDto.builder()
                 .id(1L)
                 .app("wm-main-service")
                 .uri("/events/1")
