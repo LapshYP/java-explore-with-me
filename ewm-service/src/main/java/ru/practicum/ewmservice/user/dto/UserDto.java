@@ -3,7 +3,6 @@ package ru.practicum.ewmservice.user.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 
 @Data
