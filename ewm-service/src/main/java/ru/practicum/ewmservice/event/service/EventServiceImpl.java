@@ -177,7 +177,7 @@ public class EventServiceImpl implements EventService {
         }
 
         if (updateEventAdminRequest.getCategory() != null) {
-            if (updateEvent.getCategory().getId() != updateEventAdminRequest.getCategory()) {
+            if (!updateEvent.getCategory().getId().equals(updateEventAdminRequest.getCategory())) {
                 Category category = categoryRepoJpa.findById(updateEventAdminRequest.getCategory()).get();
                 updateEvent.setCategory(category);
                 log.debug("updateByAdmin, было getCategory()= {}, стало getCategory() = {}", updateEvent.getCategory(), category);
@@ -202,8 +202,8 @@ public class EventServiceImpl implements EventService {
         }
 
         if (updateEventAdminRequest.getLocation() != null) {
-            if (updateEvent.getLocation().getLat() != updateEventAdminRequest.getLocation().getLat() ||
-                    updateEvent.getLocation().getLon() != updateEventAdminRequest.getLocation().getLon()) {
+            if (Float.compare(updateEvent.getLocation().getLat(), updateEventAdminRequest.getLocation().getLat()) != 0 ||
+                    Float.compare(updateEvent.getLocation().getLon(), updateEventAdminRequest.getLocation().getLon()) != 0) {
                 updateEvent.setLocation(new Location(updateEventAdminRequest.getLocation().getLat(), updateEventAdminRequest.getLocation().getLon()));
                 log.debug("updateByAdmin, было getLocation().getLat() = {}, стало getLocation().getLon() = {}", updateEvent.getLocation().getLat(), updateEventAdminRequest.getLocation().getLon());
             }
@@ -216,7 +216,7 @@ public class EventServiceImpl implements EventService {
             }
         }
         if (updateEventAdminRequest.getParticipantLimit() != null) {
-            if (updateEvent.getParticipantLimit() != updateEventAdminRequest.getParticipantLimit()) {
+            if (!updateEvent.getParticipantLimit().equals(updateEventAdminRequest.getParticipantLimit())) {
                 updateEvent.setParticipantLimit(updateEventAdminRequest.getParticipantLimit());
                 log.debug("updateByAdmin, было getParticipantLimit()= {}, стало getParticipantLimit() = {}", updateEvent.getParticipantLimit(), updateEventAdminRequest.getParticipantLimit());
             }
@@ -290,7 +290,7 @@ public class EventServiceImpl implements EventService {
             }
 
             if (updateEventUserRequest.getCategory() != null) {
-                if (updateEvent.getCategory().getId() != updateEventUserRequest.getCategory()) {
+                if (updateEvent.getCategory().getId().equals(updateEventUserRequest.getCategory())) {
                     updateEvent.setCategory(categoryRepoJpa.findById(updateEventUserRequest.getCategory()).get());
                 }
             }
@@ -308,12 +308,11 @@ public class EventServiceImpl implements EventService {
 
             }
 
-            if (updateEventUserRequest.getLocation() != null) {
-                if (updateEvent.getLocation().getLat() != updateEventUserRequest.getLocation().getLat() ||
-                        updateEvent.getLocation().getLon() != updateEventUserRequest.getLocation().getLon()) {
-                    updateEvent.setLocation(new Location(updateEventUserRequest.getLocation().getLat(), updateEventUserRequest.getLocation().getLon()));
-                    updateEvent.setLocation(new Location(updateEventUserRequest.getLocation().getLat(), updateEventUserRequest.getLocation().getLon()));
-                }
+            if (Float.compare(updateEvent.getLocation().getLat(), updateEventUserRequest.getLocation().getLat()) != 0 ||
+                    Float.compare(updateEvent.getLocation().getLon(), updateEventUserRequest.getLocation().getLon()) != 0) {
+                updateEvent.setLocation(new Location(updateEventUserRequest.getLocation().getLat(), updateEventUserRequest.getLocation().getLon()));
+                updateEvent.setLocation(new Location(updateEventUserRequest.getLocation().getLat(), updateEventUserRequest.getLocation().getLon()));
+
             }
             if (updateEventUserRequest.getPaid() != null) {
                 if (Boolean.compare(updateEvent.getPaid(), updateEventUserRequest.getPaid()) != 0) {
@@ -321,7 +320,7 @@ public class EventServiceImpl implements EventService {
                 }
             }
             if (updateEventUserRequest.getParticipantLimit() != null) {
-                if (updateEvent.getParticipantLimit() != updateEventUserRequest.getParticipantLimit()) {
+                if (updateEvent.getParticipantLimit().equals(updateEventUserRequest.getParticipantLimit())) {
                     updateEvent.setParticipantLimit(updateEventUserRequest.getParticipantLimit());
                 }
             }

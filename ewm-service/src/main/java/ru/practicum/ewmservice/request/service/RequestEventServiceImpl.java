@@ -37,7 +37,7 @@ public class RequestEventServiceImpl implements RequestEventService {
         User requester = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Юзер с таким именем не найден в базе данных"));
         Event event = eventRepoJpa.findById(eventId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие с таким именем не найден в базе данных"));
 
-        if (event.getInitiator().getId() == userId) {
+        if (event.getInitiator().getId().equals(userId)) {
             throw new ConflictException("Добавление запроса от инициатора мероприятия на участие в нем");
         }
         if (event.getState() == PENDING) {
@@ -52,7 +52,7 @@ public class RequestEventServiceImpl implements RequestEventService {
         } else {
 
             Long count = requestEventRepoJpa.countParticipantLimit(eventId);
-            if (event.getParticipantLimit() == count) {
+            if (event.getParticipantLimit().equals(count)) {
                 throw new ConflictException("Добавление запроса на участие в событии, у которого заполнен лимит участников");
             }
             request.setStatus(Status.PENDING);
