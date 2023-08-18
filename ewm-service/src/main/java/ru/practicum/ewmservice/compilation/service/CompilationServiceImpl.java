@@ -114,7 +114,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка обновлена, id = {} ", compilation.getId());
         CompilationDto compilationDto = new CompilationDto();
-        compilationDto.builder()
+        compilationDto =  compilationDto.builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
                 .pinned(saveCompilation.getPinned())
@@ -129,8 +129,8 @@ public class CompilationServiceImpl implements CompilationService {
 
         compilationRepoJpa.deleteById(catId);
         log.debug("Категория удалена, catId  = {} ", catId);
-        CompilationDto compilationDto = new CompilationDto();
-        compilationDto.builder()
+        CompilationDto compilationDto ;
+        compilationDto = CompilationDto.builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
                 .pinned(saveCompilation.getPinned())
