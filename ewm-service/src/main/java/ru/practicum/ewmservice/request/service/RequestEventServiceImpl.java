@@ -63,21 +63,11 @@ public class RequestEventServiceImpl implements RequestEventService {
         log.debug("Запрос на участие создан, eventId = {},userId = {}   ", eventId, userId);
         request.setEvent(event);
         Request saved = requestEventRepoJpa.save(request);
-//
-//        TypeMap<Request, RequestDto> propertyMapper = this.mapper.createTypeMap(Request.class, RequestDto.class);
-//
-//        propertyMapper.addMappings(
-//                mapper -> mapper.map(src -> src.getEvent().getId(), RequestDto::setEvent)
-//        );
-//        propertyMapper.addMappings(
-//                mapper -> mapper.map(src -> src.getRequester().getId(), RequestDto::setRequester)
-//        );
-//        RequestDto requestDto = mapper.map(saved, RequestDto.class);
+
         return new RequestDto().builder()
                 .id(saved.getId())
                 .created(saved.getCreated())
                 .event(saved.getEvent().getId())
-                .requester(saved.getRequester().getId())
                 .status(saved.getStatus())
                 .build();
     }
