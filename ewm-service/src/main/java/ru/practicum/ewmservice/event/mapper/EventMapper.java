@@ -78,7 +78,10 @@ public class EventMapper {
 
     }
     public static Set<EventShortDto> toEventShortDtoList(Set<Event> events) {
-        return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toSet());
+        return events
+                .stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toSet());
     }
 
     public static EventShortDto toEventShortDto(Event entity) {
