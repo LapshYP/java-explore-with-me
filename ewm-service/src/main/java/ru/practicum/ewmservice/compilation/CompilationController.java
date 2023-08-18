@@ -18,19 +18,18 @@ import java.util.List;
 public class CompilationController {
 
     private final CompilationService compilationService;
-// compilationDTO ={"title":"Ut eos est cum doloremque sit ipsam animi nam.","pinned":"true","events":[18]}
+
     @PostMapping(path = "/admin/compilations")
-    public ResponseEntity <CompilationWithIdAndEventsDto> create(@RequestBody CompilationDto compilationDTO) {
+    public ResponseEntity<CompilationWithIdAndEventsDto> create(@RequestBody CompilationDto compilationDTO) {
         log.info("create POST /admin/compilations , compilationDTO = {}", compilationDTO);
 
         return new ResponseEntity(compilationService.create(compilationDTO), HttpStatus.CREATED);
     }
 
-    //compilationDto====={"events":[159],"pinned":true},/n compId===77,
     @PatchMapping("/admin/compilations/{compId}")
     public CompilationDto update(@RequestBody @Valid CompilationDto compilationDto,
                                  @PathVariable Long compId) {
-        log.info("update PATCH /admin/compilations/{compId} , compilationDTO = {}, compId = {}", compilationDto,compId);
+        log.info("update PATCH /admin/compilations/{compId} , compilationDTO = {}, compId = {}", compilationDto, compId);
         return compilationService.update(compilationDto, compId);
     }
 
@@ -50,7 +49,7 @@ public class CompilationController {
     @GetMapping(path = "/compilations")
     public List<CompilationWithIdAndEventsDto> getAll(@RequestParam(name = "from", defaultValue = "0") int from,
                                                       @RequestParam(name = "size", defaultValue = "10") int size) {
-        log.info("getAll GET /compilations, from = {}, size = {}", from,size);
+        log.info("getAll GET /compilations, from = {}, size = {}", from, size);
 
         return compilationService.getAll(from, size);
     }

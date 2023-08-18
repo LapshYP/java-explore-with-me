@@ -14,8 +14,8 @@ import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.category.repository.CategoryRepoJpa;
 import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
-import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.exception.ConflictException;
+import ru.practicum.ewmservice.exception.NotFoundException;
 
 import javax.validation.*;
 import java.util.List;
@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category savedCategory = categoryRepoJpa.save(category);
-        log.debug("create, id ={}, name = {}", category.getId(),category.getName());
+        log.debug("create, id ={}, name = {}", category.getId(), category.getName());
         CategoryDto savedCategoryDto = mapper.map(savedCategory, CategoryDto.class);
         return savedCategoryDto;
     }
@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
 
-        log.debug("данные в методе getAll запрошены, from ={}, size = {}", from,size);
+        log.debug("данные в методе getAll запрошены, from ={}, size = {}", from, size);
 
         return categoryRepoJpa.findAll(pageable).stream().map(category -> {
             return mapper.map(category, CategoryDto.class);
@@ -82,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
         updatedCategory.setId(catId);
         validateUser(updatedCategory);
         categoryRepoJpa.save(updatedCategory);
-        log.debug("Категория обновлена id = {}, name = {}",category.getId(), category.getName());
+        log.debug("Категория обновлена id = {}, name = {}", category.getId(), category.getName());
         CategoryDto updatedCategoryDto = mapper.map(updatedCategory, CategoryDto.class);
         return updatedCategoryDto;
     }
@@ -91,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto delete(Long catId) {
         Category category = categoryRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
         CategoryDto categoryDTO = mapper.map(category, CategoryDto.class);
-        if (eventRepoJpa.findByCategoryId(catId).size()>0) {
+        if (eventRepoJpa.findByCategoryId(catId).size() > 0) {
             throw new ConflictException("Удаление категории с привязанными событиями");
         }
         categoryRepoJpa.deleteById(catId);

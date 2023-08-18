@@ -6,7 +6,7 @@ import ru.practicum.ewmservice.category.dto.CategoryDto;
 import java.util.List;
 
 public interface CategoryService {
-    CategoryDto create (CategoryDto categoryDTO);
+    CategoryDto create(CategoryDto categoryDTO);
 
     List<CategoryDto> getAll(int from, int size);
 

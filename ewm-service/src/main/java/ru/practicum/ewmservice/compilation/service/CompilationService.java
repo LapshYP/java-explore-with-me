@@ -7,7 +7,7 @@ import ru.practicum.ewmservice.compilation.dto.CompilationWithIdAndEventsDto;
 import java.util.List;
 
 public interface CompilationService {
-    CompilationWithIdAndEventsDto create (CompilationDto compilationDTO);
+    CompilationWithIdAndEventsDto create(CompilationDto compilationDTO);
 
     List<CompilationWithIdAndEventsDto> getAll(int from, int size);
 

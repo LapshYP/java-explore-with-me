@@ -14,14 +14,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestParamForEvent {
-    //    String text;
-//    private List<Long> users;
-//    private List<State> states;
-//    private List<Long> categories;
-//    private LocalDateTime rangeStart;
-//    private LocalDateTime rangeEnd;
-//    private int from;
-//    private int size;
+
     String text;
     List<Long> categories;
     Boolean paid;

@@ -10,10 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.CompilationWithIdAndEventsDto;
-import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.model.Compilation;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepoJpa;
-import ru.practicum.ewmservice.event.dto.EventDto;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
@@ -21,7 +19,6 @@ import ru.practicum.ewmservice.exception.NotFoundException;
 
 import javax.validation.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +32,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepoJpa compilationRepoJpa;
 
     private final EventRepoJpa eventRepoJpa;
-    private CompilationMapper compilationMapper;
+
 
     private final ModelMapper mapper = new ModelMapper();
 
@@ -52,7 +49,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationWithIdAndEventsDto create(CompilationDto compilationDTO) {
         Compilation compilation = mapper.map(compilationDTO, Compilation.class);
-        if (compilation.getTitle()== null) {
+        if (compilation.getTitle() == null) {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Title field equal null");
         }
         if (compilation.getTitle().length() > 50) {
@@ -64,10 +61,6 @@ public class CompilationServiceImpl implements CompilationService {
             events = eventRepoJpa.findAllById(compilationDTO.getEvents());
         }
 
-//        Set<Event> eventSet = new HashSet<>();
-//        for (Event event : events) {
-//            eventSet.add(event);
-//        }
         compilation.setEvents(events);
         compilation.setPinned(false);
 
@@ -84,7 +77,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public List<CompilationWithIdAndEventsDto> getAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        log.debug("getAll,  from ={}, size ={}  ",  from, size);
+        log.debug("getAll,  from ={}, size ={}  ", from, size);
         return compilationRepoJpa.findAll(pageable).stream().map(compilation -> {
             return mapper.map(compilation, CompilationWithIdAndEventsDto.class);
         }).collect(Collectors.toList());
@@ -100,7 +93,7 @@ public class CompilationServiceImpl implements CompilationService {
             updatedCompilation.setTitle(compilation.getTitle());
         }
         if (compilation.getTitle() != null) {
-            if (compilation.getTitle().length() > 50 ) {
+            if (compilation.getTitle().length() > 50) {
                 throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
             }
         }
@@ -114,15 +107,13 @@ public class CompilationServiceImpl implements CompilationService {
             events = eventRepoJpa.findAllById(compilationWithEventsDto.getEvents());
         }
 
-//        Set<Event> eventSet = new HashSet<>(events);
 
         updatedCompilation.setEvents(events);
 
-//        updatedCompilation.setId(catId);
         validateUser(updatedCompilation);
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка обновлена, id = {} ", compilation.getId());
-        //  CompilationDto updatedCompilationDto = mapper.map(updatedCompilation, CompilationDto.class);
+
         return new CompilationDto().builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
@@ -134,7 +125,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto delete(Long catId) {
         Compilation saveCompilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));
-        //  CompilationDto compilationDTO = mapper.map(compilation, CompilationDto.class);
+
         compilationRepoJpa.deleteById(catId);
         log.debug("Категория удалена, catId  = {} ", catId);
         return new CompilationDto().builder()

@@ -17,5 +17,5 @@ public class CompilationDto {
     Long id;
     String title;
     Boolean pinned;
-     Set<Long> events;
+    Set<Long> events;
 }

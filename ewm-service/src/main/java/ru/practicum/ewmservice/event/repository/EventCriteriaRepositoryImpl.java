@@ -7,7 +7,6 @@ import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.EventSearchCriteria;
 
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
@@ -23,6 +22,7 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
 
 
     private final CriteriaBuilder criteriaBuilder;
+
     public EventCriteriaRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.criteriaBuilder = entityManager.getCriteriaBuilder();

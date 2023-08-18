@@ -22,9 +22,4 @@ public class ParticipationRequestDto {
     Long id;
     Long requester;
     Status status;
-
-
-
-
-
 }
