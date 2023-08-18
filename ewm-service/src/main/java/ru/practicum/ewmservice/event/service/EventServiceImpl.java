@@ -474,7 +474,7 @@ public class EventServiceImpl implements EventService {
 
     private static ParticipationRequestDto getParticipationRequestDto(Request request) {
 
-        ParticipationRequestDto participationRequestDto  ;
+        ParticipationRequestDto participationRequestDto;
         participationRequestDto = ParticipationRequestDto.builder()
                 .id(request.getId())
                 .created(request.getCreated())
