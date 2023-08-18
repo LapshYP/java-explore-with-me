@@ -2,7 +2,6 @@ package ru.practicum.ewmservice.request.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.event.model.Event;
@@ -29,7 +28,6 @@ public class RequestEventServiceImpl implements RequestEventService {
     private final RequestEventRepoJpa requestEventRepoJpa;
     private final EventRepoJpa eventRepoJpa;
     private final UserRepoJpa userRepoJpa;
-    private final ModelMapper mapper = new ModelMapper();
 
     @Override
     public RequestDto create(Long eventId, Long userId) {
@@ -63,7 +61,8 @@ public class RequestEventServiceImpl implements RequestEventService {
         log.debug("Запрос на участие создан, eventId = {},userId = {}   ", eventId, userId);
         request.setEvent(event);
         Request saved = requestEventRepoJpa.save(request);
-        RequestDto requestDto = new RequestDto().builder()
+        RequestDto requestDto = new RequestDto();
+        requestDto = RequestDto.builder()
                 .id(saved.getId())
                 .created(saved.getCreated())
                 .event(saved.getEvent().getId())
