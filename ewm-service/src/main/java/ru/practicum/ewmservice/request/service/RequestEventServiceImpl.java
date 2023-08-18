@@ -63,13 +63,14 @@ public class RequestEventServiceImpl implements RequestEventService {
         log.debug("Запрос на участие создан, eventId = {},userId = {}   ", eventId, userId);
         request.setEvent(event);
         Request saved = requestEventRepoJpa.save(request);
-
-        return new RequestDto().builder()
+        RequestDto requestDto = new RequestDto().builder()
                 .id(saved.getId())
                 .created(saved.getCreated())
                 .event(saved.getEvent().getId())
                 .status(saved.getStatus())
                 .build();
+
+        return requestDto;
     }
 
     @Override
