@@ -10,6 +10,7 @@ import lombok.Setter;
 public class LocationDto {
     private Float lat;
     private Float lon;
+
     public LocationDto(Float lat, Float lon) {
     }
 }

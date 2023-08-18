@@ -1,4 +1,5 @@
 package ru.practicum.ewmservice.user.service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.user.dto.UserDto;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
-
 
 import javax.validation.*;
 import java.util.List;
@@ -44,10 +44,12 @@ public class UserServiceImpl implements UserService {
     public UserDto create(UserDto userDTO) {
         User user = mapper.map(userDTO, User.class);
         validateUser(user);
-        if (user.getName().length()<2 || user.getName().length()>250) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST,"Name field must be >2 and <250");}
-        if (user.getEmail().length()<6 || user.getEmail().length()>254) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST,"Email field must be >6 and <64");}
+        if (user.getName().length() < 2 || user.getName().length() > 250) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be >2 and <250");
+        }
+        if (user.getEmail().length() < 6 || user.getEmail().length() > 254) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Email field must be >6 and <64");
+        }
         User savedUser = userRepoJpa.save(user);
         log.debug("Пользователь создан, id = {} , name= {}", user.getId(), user.getName());
         UserDto savedUserDto = mapper.map(savedUser, UserDto.class);
@@ -56,18 +58,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAll(List<Long> ids, int from, int size) {
-        if (ids != null) {  ids =  ids.stream().filter(aLong -> aLong>0).collect(Collectors.toList());}
+        if (ids != null) {
+            ids = ids.stream().filter(aLong -> aLong > 0).collect(Collectors.toList());
+        }
 
         List<User> users;
-        Pageable pageable = PageRequest.of(from / size, size,Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
 
 
-        if (ids == null || ids.size()==0) {
+        if (ids == null || ids.size() == 0) {
             users = userRepoJpa.findAll(pageable).toList();
         } else {
             users = userRepoJpa.findAllByIdIn(ids, pageable);
         }
-        log.debug("getAll,ids = {}, from = {} , size= {}", ids , from, size);
+        log.debug("getAll,ids = {}, from = {} , size= {}", ids, from, size);
         return users.stream()
                 .map(user -> {
                     return mapper.map(user, UserDto.class);

@@ -63,6 +63,7 @@ public class ExceptionController {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorTextBuilder methodArgumentNotValidException(final MethodArgumentNotValidException ex) {
@@ -103,6 +104,4 @@ public class ExceptionController {
                 HttpStatus.CONFLICT);
         return errorTextBuilder;
     }
-
-
 }
