@@ -470,7 +470,6 @@ public class EventServiceImpl implements EventService {
                 .timestamp(LocalDateTime.now())
                 .build();
         statsClient.saveStats(endpointHit);
-
         return events;
     }
 
