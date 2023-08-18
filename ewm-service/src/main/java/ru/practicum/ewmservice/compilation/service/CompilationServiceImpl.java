@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
-    private final ModelMapper modelMapper = new ModelMapper();
 
     private final CompilationRepoJpa compilationRepoJpa;
 
@@ -37,8 +36,10 @@ public class CompilationServiceImpl implements CompilationService {
     private final ModelMapper mapper = new ModelMapper();
 
     private void validateUser(Compilation compilation) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
+        Validator validator;
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            validator = factory.getValidator();
+        }
         Set<ConstraintViolation<Compilation>> violations = validator.validate(compilation);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
@@ -67,11 +68,7 @@ public class CompilationServiceImpl implements CompilationService {
         validateUser(compilation);
         Compilation savedCompilation = compilationRepoJpa.save(compilation);
         log.debug("Подборка добавлена,  id ={}  ", compilation.getId());
-
-        CompilationWithIdAndEventsDto savedCompilationDto = mapper.map(savedCompilation, CompilationWithIdAndEventsDto.class);
-
-
-        return savedCompilationDto;
+        return mapper.map(savedCompilation, CompilationWithIdAndEventsDto.class);
     }
 
     @Override
@@ -113,8 +110,8 @@ public class CompilationServiceImpl implements CompilationService {
         validateUser(updatedCompilation);
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка обновлена, id = {} ", compilation.getId());
-        CompilationDto compilationDto = new CompilationDto();
-        compilationDto =  compilationDto.builder()
+        CompilationDto compilationDto;
+        compilationDto = CompilationDto.builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
                 .pinned(saveCompilation.getPinned())
@@ -129,13 +126,12 @@ public class CompilationServiceImpl implements CompilationService {
 
         compilationRepoJpa.deleteById(catId);
         log.debug("Категория удалена, catId  = {} ", catId);
-        CompilationDto compilationDto ;
+        CompilationDto compilationDto;
         compilationDto = CompilationDto.builder()
                 .id(saveCompilation.getId())
                 .title(saveCompilation.getTitle())
                 .pinned(saveCompilation.getPinned())
                 .build();
-
         return compilationDto;
     }
 
