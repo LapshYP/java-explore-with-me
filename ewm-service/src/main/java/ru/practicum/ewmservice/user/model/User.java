@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "users", schema = "public")
+@Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class User {
@@ -28,4 +28,6 @@ public class User {
     @NotEmpty(message = "must not be empty")
     @Column
     private String email;
+
+
 }
