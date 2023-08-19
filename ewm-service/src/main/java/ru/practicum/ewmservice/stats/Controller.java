@@ -21,8 +21,6 @@ public class Controller {
 
     @PostMapping("/hit")
     public int postSmth() {
-
         return serviceEwn.postSmth();
     }
-
 }
