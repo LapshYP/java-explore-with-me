@@ -22,10 +22,10 @@ import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.request.model.Request;
 import ru.practicum.ewmservice.request.model.Status;
 import ru.practicum.ewmservice.request.repossitory.RequestEventRepoJpa;
+import ru.practicum.ewmservice.stats.ServiceEwn;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
 import ru.practicum.statsclient.StatsClient;
-import ru.practicum.statsdto.EndpointHitDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
@@ -48,6 +48,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepoJpa userRepoJpa;
     private final CategoryRepoJpa categoryRepoJpa;
     private final RequestEventRepoJpa requestEventRepoJpa;
+    private final ServiceEwn serviceEwn;
 
     private final ModelMapper mapper = new ModelMapper();
     private final HashSet<String> requestHashSet = new HashSet<>();
@@ -110,6 +111,8 @@ public class EventServiceImpl implements EventService {
         if (event.getState() != PUBLISHED && event.getState() != PUBLISH_EVENT) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Попытка получения информации о событии по публичному эндпоинту без публикации");
         }
+
+        log.info("getById, event.getId()= {}, serviceEwn.saveEndpointHit(servletRequest) = {} ", event.getId(), serviceEwn.saveEndpointHit(servletRequest));
 
         event.setViews((long) httpServletRequests.get(eventId).size());
         Event eventWithView = eventRepoJpa.save(event);
@@ -471,8 +474,9 @@ public class EventServiceImpl implements EventService {
         log.info("  {}", events.size());
 
         HttpServletRequest request = param.getRequest();
-        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
-        statsClient.saveStats(endpointHit);
+//        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
+//        statsClient.saveStats(endpointHit);
+        log.info("getAllPublic (save stats), events.size()= {}, serviceEwn.saveEndpointHit(servletRequest) = {} ", events.size(), serviceEwn.saveEndpointHit(request));
         return events;
     }
 
