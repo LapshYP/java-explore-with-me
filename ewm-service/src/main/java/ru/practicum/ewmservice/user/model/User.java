@@ -28,6 +28,4 @@ public class User {
     @NotEmpty(message = "must not be empty")
     @Column
     private String email;
-
-
 }
