@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.CompilationWithIdAndEventsDto;
 import ru.practicum.ewmservice.compilation.model.Compilation;
@@ -48,6 +49,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @SneakyThrows
     @Override
+    @Transactional
     public CompilationWithIdAndEventsDto create(CompilationDto compilationDTO) {
         Compilation compilation = mapper.map(compilationDTO, Compilation.class);
         if (compilation.getTitle() == null) {
@@ -82,7 +84,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @SneakyThrows
     @Override
-
+    @Transactional
     public CompilationDto update(CompilationDto compilationWithEventsDto, Long catId) {
         Compilation compilation = mapper.map(compilationWithEventsDto, Compilation.class);
         Compilation updatedCompilation = compilationRepoJpa.findById(catId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + catId + "' не найден"));

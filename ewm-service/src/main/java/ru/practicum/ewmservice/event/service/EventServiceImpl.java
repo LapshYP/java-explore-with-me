@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.category.repository.CategoryRepoJpa;
 import ru.practicum.ewmservice.event.dto.*;
@@ -70,6 +71,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @SneakyThrows
+    @Transactional
     public EventDto create(EventNewDto eventNewDto, Long userId) {
         User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         Category category = categoryRepoJpa.findById(eventNewDto.getCategory()).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Категория с id = '" + userId + "' не найдена"));
@@ -146,7 +148,7 @@ public class EventServiceImpl implements EventService {
         List<ParticipationRequestDto> collect = requests.stream().map(request -> getParticipationRequestDto(request)).collect(Collectors.toList());
         return collect;
     }
-
+    @Transactional
     public EventDto updateByAdmin(UpdateEventAdminRequest updateEventAdminRequest, Long eventId) {
         Event updateEvent = eventRepoJpa.findById(eventId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие c id = '" + eventId + "' не существует"));
 
@@ -247,6 +249,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto updateByUser(UpdateEventUserRequest updateEventUserRequest, Long eventId, Long userId) {
 
         Event updateEvent = eventRepoJpa.findById(eventId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие c id = '" + eventId + "' не существует"));
@@ -341,6 +344,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto updateByUserCancel(Long userId, Long requestId) {
 
         Request request = requestEventRepoJpa.findById(requestId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Запрос с id = '" + requestId + "' не существует"));
@@ -352,6 +356,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventRequestStatusUpdateResult updateRequestStatus(EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest, Long userId, Long eventId) {
         if (eventRequestStatusUpdateRequest == null) {
             throw new ConflictException("Status is not validate");

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.ConflictException;
@@ -30,6 +31,7 @@ public class RequestEventServiceImpl implements RequestEventService {
     private final UserRepoJpa userRepoJpa;
 
     @Override
+    @Transactional
     public RequestDto create(Long eventId, Long userId) {
 
         User requester = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Юзер с таким именем не найден в базе данных"));

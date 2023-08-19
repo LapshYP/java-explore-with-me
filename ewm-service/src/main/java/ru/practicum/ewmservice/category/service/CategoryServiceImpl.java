@@ -43,6 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @SneakyThrows
     @Override
+    @Transactional
     public CategoryDto create(CategoryDto categoryDTO) {
         Category category = mapper.map(categoryDTO, Category.class);
         validateUser(category);
