@@ -5,9 +5,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.event.model.CriteriaAdmin;
-import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.CriteriaUser;
-import ru.practicum.ewmservice.event.model.State;
+import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.user.model.User;
 
 import javax.persistence.EntityManager;
@@ -52,7 +51,7 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
     }
 
     @Override
-    public Page<Event>  findByParamAdmin(Pageable pageable, CriteriaAdmin criteriaAdmin) {
+    public Page<Event> findByParamAdmin(Pageable pageable, CriteriaAdmin criteriaAdmin) {
         CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
         Root<Event> eventRoot = criteriaQuery.from(Event.class);
         Predicate predicate = getAdminPredicate(criteriaAdmin, eventRoot);
