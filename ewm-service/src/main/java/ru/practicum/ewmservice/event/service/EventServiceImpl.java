@@ -26,6 +26,7 @@ import ru.practicum.ewmservice.stats.ServiceEwn;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
 import ru.practicum.statsclient.StatsClient;
+import ru.practicum.statsdto.EndpointHitDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
@@ -112,7 +113,10 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Попытка получения информации о событии по публичному эндпоинту без публикации");
         }
 
-        log.info("getById, event.getId()= {}, serviceEwn.saveEndpointHit(servletRequest) = {} ", event.getId(), serviceEwn.saveEndpointHit(servletRequest));
+        HttpServletRequest request = servletRequest;
+        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
+        statsClient.saveStats(endpointHit);
+        log.info("getAllPublic (save stats), events.size()= {}  ", event.getId() );
 
         event.setViews((long) httpServletRequests.get(eventId).size());
         Event eventWithView = eventRepoJpa.save(event);
@@ -474,9 +478,9 @@ public class EventServiceImpl implements EventService {
         log.info("  {}", events.size());
 
         HttpServletRequest request = param.getRequest();
-//        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
-//        statsClient.saveStats(endpointHit);
-        log.info("getAllPublic (save stats), events.size()= {}, serviceEwn.saveEndpointHit(servletRequest) = {} ", events.size(), serviceEwn.saveEndpointHit(request));
+        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
+        statsClient.saveStats(endpointHit);
+        log.info("getAllPublic (save stats), events.size()= {}  ", events.size() );
         return events;
     }
 
