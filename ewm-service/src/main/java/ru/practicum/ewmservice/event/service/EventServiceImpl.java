@@ -440,7 +440,6 @@ public class EventServiceImpl implements EventService {
         List<EventDto> events = events1.stream().map(e -> mapper.map(e, EventDto.class)).collect(Collectors.toList());
 
         log.info("getAllAdmin, events.size() {}", events.size());
-
         return events;
     }
 
