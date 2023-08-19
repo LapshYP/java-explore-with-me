@@ -3,9 +3,11 @@ package ru.practicum.statsserver.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.statsdto.EndpointHitDto;
 import ru.practicum.statsdto.ViewStatsDto;
+import ru.practicum.statsserver.exception.BadRequestException;
 import ru.practicum.statsserver.mapper.EndpointHitMapper;
 import ru.practicum.statsserver.model.EndpointHit;
 import ru.practicum.statsserver.repo.StatsRepo;
@@ -31,6 +33,16 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (start.isAfter(end)) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса с неверными датами начала и конца диапазона времени");
+        }
+
+        if (start == null) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса без даты начала");
+        }
+        if (end == null) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса без даты конца");
+        }
         PageRequest pageable = PageRequest.of(0, 20);
         if (unique) {
             return statsRepo.getUniqueViewStats(start, end, uris, pageable);
