@@ -398,7 +398,7 @@ public class EventServiceImpl implements EventService {
                         request.setStatus(CONFIRMED);
                         eventRequestStatusUpdateResult.getConfirmedRequests().add(getParticipationRequestDto(request));
                         requestEventRepoJpa.save(request);
-                        Long confirmedRequests = requestEventRepoJpa.getConfirmedRequests(event.getId());
+                        long confirmedRequests = event.getConfirmedRequests();
                         event.setConfirmedRequests(confirmedRequests + 1L);
                         eventRepoJpa.save(event);
                     }
@@ -410,17 +410,6 @@ public class EventServiceImpl implements EventService {
         return eventRequestStatusUpdateResult;
     }
 
-    //    @Override
-//    public List<EventDto> getAllAdmin(RequestParamForAdmin param) {
-//        Pageable pageable = PageRequest.of(param.getFrom() / param.getSize(), param.getSize());
-//        List<Event> events;
-//        if (param.getUsers() == null && param.getStates() == null && param.getCategories() == null && param.getRangeStart() == null && param.getRangeEnd() == null) {
-//            events = eventRepoJpa.findAll(pageable).toList();
-//        } else
-//            events = eventRepoJpa.findEventsByParams(param.getUsers(), param.getStates(), param.getCategories(), param.getRangeStart(), param.getRangeEnd(), pageable);
-//
-//        return events.stream().peek(event -> event.setConfirmedRequests(requestEventRepoJpa.getConfirmedRequests(event.getId()))).map(EventMapper::toEventDto).collect(Collectors.toList());
-//    }
     @Override
     public List<EventDto> getAllAdmin(RequestParamAdmin param) {
 
