@@ -148,6 +148,7 @@ public class EventServiceImpl implements EventService {
         List<ParticipationRequestDto> collect = requests.stream().map(request -> getParticipationRequestDto(request)).collect(Collectors.toList());
         return collect;
     }
+
     @Transactional
     public EventDto updateByAdmin(UpdateEventAdminRequest updateEventAdminRequest, Long eventId) {
         Event updateEvent = eventRepoJpa.findById(eventId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие c id = '" + eventId + "' не существует"));
