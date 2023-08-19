@@ -37,12 +37,6 @@ public class StatsServiceImpl implements StatsService {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса с неверными датами начала и конца диапазона времени");
         }
 
-        if (start == null) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса без даты начала");
-        }
-        if (end == null) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса без даты конца");
-        }
         PageRequest pageable = PageRequest.of(0, 20);
         if (unique) {
             return statsRepo.getUniqueViewStats(start, end, uris, pageable);
