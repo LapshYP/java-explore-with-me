@@ -22,7 +22,6 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
 
     private final EntityManager entityManager;
 
-
     private final CriteriaBuilder criteriaBuilder;
 
     public EventCriteriaRepositoryImpl(EntityManager entityManager) {
