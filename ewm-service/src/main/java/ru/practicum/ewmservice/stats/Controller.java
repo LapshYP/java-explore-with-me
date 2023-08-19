@@ -1,4 +1,4 @@
-package ru.practicum.ewmservice;
+package ru.practicum.ewmservice.stats;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

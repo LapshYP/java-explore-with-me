@@ -41,17 +41,17 @@ public class EventController {
 
     @GetMapping("/events")
     public ResponseEntity<Set<EventShortDto>> getAllPublic(@RequestParam(required = false) String text,
-                                                          @RequestParam(required = false) List<Long> categories,
-                                                          @RequestParam(required = false) Boolean paid,
-                                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                          @RequestParam(required = false) LocalDateTime rangeStart,
-                                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                          @RequestParam(required = false) LocalDateTime rangeEnd,
-                                                          @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-                                                          @RequestParam(defaultValue = "EVENT_DATE") String sort,
-                                                          @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                          @RequestParam(defaultValue = "10") @Positive int size,
-                                                          HttpServletRequest request) {
+                                                           @RequestParam(required = false) List<Long> categories,
+                                                           @RequestParam(required = false) Boolean paid,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                           @RequestParam(required = false) LocalDateTime rangeStart,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                           @RequestParam(required = false) LocalDateTime rangeEnd,
+                                                           @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+                                                           @RequestParam(defaultValue = "EVENT_DATE") String sort,
+                                                           @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                           @RequestParam(defaultValue = "10") @Positive int size,
+                                                           HttpServletRequest request) {
         log.info("getAllPublic GET /events,  text = {}, categories = {}, paid = {}, rangeStart = {}, " +
                         "rangeEnd = {}, onlyAvailable = {}, sort = {}, from = {}, size = {}", text, categories, paid,
                 rangeStart, rangeEnd, onlyAvailable, sort, from, size);
@@ -116,13 +116,6 @@ public class EventController {
         return new ResponseEntity<>(eventService.getAllAdmin(param), HttpStatus.OK);
     }
 
-//        @GetMapping("/admin/events")
-//    public EventDto getAll(@RequestParam(name = "from", defaultValue = "0") int from,
-//                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
-//        log.info("getAll GET /admin/events , from = {}, size = {}", from, size);
-//      //  return new ResponseEntity<>(eventService.getAll(from, size), HttpStatus.OK);
-//        return null;
-//    }
 
     @GetMapping("/users/{userId}/events")
     public ResponseEntity<List<EventDto>> getByUserId(@PathVariable Long userId,

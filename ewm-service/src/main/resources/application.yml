@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   application.name: main-service
   jpa:
     hibernate:
@@ -39,3 +39,14 @@ spring:
   h2:
     console:
       enabled: true
+logging:
+  level:
+    ru:
+      practicum:
+        ewmservice: debug
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false

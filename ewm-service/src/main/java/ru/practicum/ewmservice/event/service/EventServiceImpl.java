@@ -398,6 +398,9 @@ public class EventServiceImpl implements EventService {
                         request.setStatus(CONFIRMED);
                         eventRequestStatusUpdateResult.getConfirmedRequests().add(getParticipationRequestDto(request));
                         requestEventRepoJpa.save(request);
+                        Long confirmedRequests = requestEventRepoJpa.getConfirmedRequests(event.getId());
+                        event.setConfirmedRequests(confirmedRequests + 1L);
+                        eventRepoJpa.save(event);
                     }
                     break;
             }
@@ -441,17 +444,15 @@ public class EventServiceImpl implements EventService {
                 .build();
 
         List<Event> events1 = eventRepoJpa.findByParamAdmin(pageable, criteria).toList();
-      events1.stream()
-              .peek(event -> event.setConfirmedRequests(requestEventRepoJpa.getConfirmedRequests(event.getId())))
-              .map(EventMapper::toEventDto)
-              .collect(Collectors.toList());
+        events1.stream()
+                .map(EventMapper::toEventDto)
+                .collect(Collectors.toList());
 
-        List<EventDto> events2 = events1.stream().map(e -> mapper.map(e, EventDto.class)).collect(Collectors.toList());
+        List<EventDto> events = events1.stream().map(e -> mapper.map(e, EventDto.class)).collect(Collectors.toList());
 
-        //Set<EventDto> events = new HashSet<>(events2);
-        log.info("  {}", events2.size());
+        log.info("getAllAdmin, events.size() {}", events.size());
 
-        return events2;
+        return events;
     }
 
     public Set<EventShortDto> getAllPublic(RequestParamUser param) {
