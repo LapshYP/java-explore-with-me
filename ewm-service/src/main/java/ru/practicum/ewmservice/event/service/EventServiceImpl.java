@@ -116,7 +116,7 @@ public class EventServiceImpl implements EventService {
         HttpServletRequest request = servletRequest;
         EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
         statsClient.saveStats(endpointHit);
-        log.info("getAllPublic (save stats), events.size()= {}  ", event.getId() );
+        log.info("getAllPublic (save stats), events.size()= {}  ", event.getId());
 
         event.setViews((long) httpServletRequests.get(eventId).size());
         Event eventWithView = eventRepoJpa.save(event);
@@ -480,7 +480,7 @@ public class EventServiceImpl implements EventService {
         HttpServletRequest request = param.getRequest();
         EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
         statsClient.saveStats(endpointHit);
-        log.info("getAllPublic (save stats), events.size()= {}  ", events.size() );
+        log.info("getAllPublic (save stats), events.size()= {}  ", events.size());
         return events;
     }
 
