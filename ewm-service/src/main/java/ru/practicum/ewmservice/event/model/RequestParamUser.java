@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RequestParamForEvent {
+public class RequestParamUser {
 
     String text;
     List<Long> categories;

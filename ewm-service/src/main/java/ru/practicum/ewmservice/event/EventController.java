@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.event.dto.*;
-import ru.practicum.ewmservice.event.model.RequestParamForAdmin;
-import ru.practicum.ewmservice.event.model.RequestParamForEvent;
+import ru.practicum.ewmservice.event.model.RequestParamAdmin;
+import ru.practicum.ewmservice.event.model.RequestParamUser;
 import ru.practicum.ewmservice.event.model.State;
 import ru.practicum.ewmservice.event.service.EventService;
 
@@ -55,7 +55,7 @@ public class EventController {
         log.info("getAllPublic GET /events,  text = {}, categories = {}, paid = {}, rangeStart = {}, " +
                         "rangeEnd = {}, onlyAvailable = {}, sort = {}, from = {}, size = {}", text, categories, paid,
                 rangeStart, rangeEnd, onlyAvailable, sort, from, size);
-        RequestParamForEvent param = RequestParamForEvent.builder()
+        RequestParamUser param = RequestParamUser.builder()
                 .text(text)
                 .categories(categories)
                 .paid(paid)
@@ -103,7 +103,7 @@ public class EventController {
                     .collect(Collectors.toList());
         }
 
-        RequestParamForAdmin param = RequestParamForAdmin.builder()
+        RequestParamAdmin param = RequestParamAdmin.builder()
                 .users(users)
                 .states(statesEnum)
                 .categories(categories)

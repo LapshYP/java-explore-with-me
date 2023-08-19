@@ -4,8 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmservice.category.model.Category;
+import ru.practicum.ewmservice.event.model.CriteriaAdmin;
 import ru.practicum.ewmservice.event.model.Event;
-import ru.practicum.ewmservice.event.model.EventSearchCriteria;
+import ru.practicum.ewmservice.event.model.CriteriaUser;
+import ru.practicum.ewmservice.event.model.State;
+import ru.practicum.ewmservice.user.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -28,11 +31,11 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    public Page<Event> findByParamFilters(Pageable pageable, EventSearchCriteria eventSearchCriteria) {
+    public Page<Event> findByParamUser(Pageable pageable, CriteriaUser criteriaUser) {
 
         CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
         Root<Event> eventRoot = criteriaQuery.from(Event.class);
-        Predicate predicate = getPredicate(eventSearchCriteria, eventRoot);
+        Predicate predicate = getUserPredicate(criteriaUser, eventRoot);
         criteriaQuery.where(predicate);
 
         if (pageable.getSort().isUnsorted()) {
@@ -48,8 +51,62 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
         return new PageImpl<>(events);
     }
 
+    @Override
+    public Page<Event>  findByParamAdmin(Pageable pageable, CriteriaAdmin criteriaAdmin) {
+        CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
+        Root<Event> eventRoot = criteriaQuery.from(Event.class);
+        Predicate predicate = getAdminPredicate(criteriaAdmin, eventRoot);
+        criteriaQuery.where(predicate);
 
-    private Predicate getPredicate(EventSearchCriteria criteria, Root<Event> eventRoot) {
+        if (pageable.getSort().isUnsorted()) {
+            criteriaQuery.orderBy(criteriaBuilder.desc(eventRoot.get("createdOn")));
+        }
+
+        TypedQuery<Event> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        List<Event> events = typedQuery.getResultList();
+
+        return new PageImpl<>(events);
+    }
+
+    private Predicate getAdminPredicate(CriteriaAdmin criteriaAdmin, Root<Event> eventRoot) {
+        List<Predicate> predicates = new ArrayList<>();
+        Predicate annotationPredicate = null;
+        if (criteriaAdmin != null && criteriaAdmin.getCategories() != null && !criteriaAdmin.getCategories().isEmpty()) {
+            Join<Event, Category> categoryJoin = eventRoot.join("category");
+            predicates.add(categoryJoin.get("id").in(criteriaAdmin.getCategories()));
+        }
+        if (criteriaAdmin != null && criteriaAdmin.getUsers() != null && !criteriaAdmin.getUsers().isEmpty()) {
+            Join<Event, User> userJoin = eventRoot.join("initiator");
+            predicates.add(userJoin.get("id").in(criteriaAdmin.getUsers()));
+        }
+        if (criteriaAdmin != null && criteriaAdmin.getStates() != null && !criteriaAdmin.getStates().isEmpty()) {
+            predicates.add(eventRoot.get("state").in(criteriaAdmin.getStates()));
+        }
+
+
+        if (criteriaAdmin != null && criteriaAdmin.getRangeStart() != null || criteriaAdmin.getRangeEnd() != null) {
+            LocalDateTime rangeStart = criteriaAdmin.getRangeStart() != null
+                    ? criteriaAdmin.getRangeStart()
+                    : LocalDateTime.MIN;
+            LocalDateTime rangeEnd = criteriaAdmin.getRangeEnd() != null
+                    ? criteriaAdmin.getRangeEnd()
+                    : LocalDateTime.MAX;
+            predicates.add(criteriaBuilder.between(eventRoot.get("date"), rangeStart, rangeEnd));
+        } else {
+            predicates.add(criteriaBuilder.between(eventRoot.get("date"), LocalDateTime.now(), LocalDateTime.now().plusYears(100)));
+        }
+
+        if (predicates.isEmpty()) {
+            return null;
+        } else {
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        }
+    }
+
+    private Predicate getUserPredicate(CriteriaUser criteria, Root<Event> eventRoot) {
         List<Predicate> predicates = new ArrayList<>();
         Predicate annotationPredicate = null;
         if (Objects.nonNull(criteria.getText())) {

@@ -2,8 +2,8 @@ package ru.practicum.ewmservice.event.service;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.event.dto.*;
-import ru.practicum.ewmservice.event.model.RequestParamForAdmin;
-import ru.practicum.ewmservice.event.model.RequestParamForEvent;
+import ru.practicum.ewmservice.event.model.RequestParamAdmin;
+import ru.practicum.ewmservice.event.model.RequestParamUser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -32,8 +32,8 @@ public interface EventService {
 
     EventRequestStatusUpdateResult updateRequestStatus(EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest, Long userId, Long eventId);
 
-    List<EventDto> getAllAdmin(RequestParamForAdmin param);
+    List<EventDto> getAllAdmin(RequestParamAdmin param);
 
-    Set<EventShortDto> getAllPublic(RequestParamForEvent param);
+    Set<EventShortDto> getAllPublic(RequestParamUser param);
 
 }

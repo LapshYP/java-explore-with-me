@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   application.name: main-service
   jpa:
     hibernate:
@@ -14,14 +14,11 @@ server:
 app:
   stats:
     url: http://localhost:9090
-
-
 ---
 spring:
   config:
     activate:
       on-profile: dev
-
   #spring.config.activate.on-profile=default,ci,test
   datasource:
     driverClassName: org.h2.Driver
@@ -36,6 +33,9 @@ spring:
       on-profile: prod
   datasource:
     driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:ewm
-    username: test
-    password: test
+    url: jdbc:h2:file:./db/explore
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true

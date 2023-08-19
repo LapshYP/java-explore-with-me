@@ -407,19 +407,19 @@ public class EventServiceImpl implements EventService {
         return eventRequestStatusUpdateResult;
     }
 
+    //    @Override
+//    public List<EventDto> getAllAdmin(RequestParamForAdmin param) {
+//        Pageable pageable = PageRequest.of(param.getFrom() / param.getSize(), param.getSize());
+//        List<Event> events;
+//        if (param.getUsers() == null && param.getStates() == null && param.getCategories() == null && param.getRangeStart() == null && param.getRangeEnd() == null) {
+//            events = eventRepoJpa.findAll(pageable).toList();
+//        } else
+//            events = eventRepoJpa.findEventsByParams(param.getUsers(), param.getStates(), param.getCategories(), param.getRangeStart(), param.getRangeEnd(), pageable);
+//
+//        return events.stream().peek(event -> event.setConfirmedRequests(requestEventRepoJpa.getConfirmedRequests(event.getId()))).map(EventMapper::toEventDto).collect(Collectors.toList());
+//    }
     @Override
-    public List<EventDto> getAllAdmin(RequestParamForAdmin param) {
-        Pageable pageable = PageRequest.of(param.getFrom() / param.getSize(), param.getSize());
-        List<Event> events;
-        if (param.getUsers() == null && param.getStates() == null && param.getCategories() == null && param.getRangeStart() == null && param.getRangeEnd() == null) {
-            events = eventRepoJpa.findAll(pageable).toList();
-        } else
-            events = eventRepoJpa.findEventsByParams(param.getUsers(), param.getStates(), param.getCategories(), param.getRangeStart(), param.getRangeEnd(), pageable);
-
-        return events.stream().peek(event -> event.setConfirmedRequests(requestEventRepoJpa.getConfirmedRequests(event.getId()))).map(EventMapper::toEventDto).collect(Collectors.toList());
-    }
-
-    public Set<EventShortDto> getAllPublic(RequestParamForEvent param) {
+    public List<EventDto> getAllAdmin(RequestParamAdmin param) {
 
         LocalDateTime rangeEndLocalDateTime = param.getRangeEnd();
         LocalDateTime rangeStartLocalDateTime = param.getRangeStart();
@@ -432,9 +432,44 @@ public class EventServiceImpl implements EventService {
 
         Pageable pageable = PageRequest.of(param.getFrom() / param.getSize(), param.getSize(), org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
 
-        EventSearchCriteria criteria = EventSearchCriteria.builder().text(param.getText()).categories(param.getCategories()).rangeEnd(rangeEndLocalDateTime).rangeStart(rangeStartLocalDateTime).paid(param.getPaid()).build();
+        CriteriaAdmin criteria = CriteriaAdmin.builder()
+                .users(param.getUsers())
+                .states(param.getStates())
+                .categories(param.getCategories())
+                .rangeEnd(rangeEndLocalDateTime)
+                .rangeStart(rangeStartLocalDateTime)
+                .build();
 
-        List<Event> events1 = eventRepoJpa.findByParamFilters(pageable, criteria).toList();
+        List<Event> events1 = eventRepoJpa.findByParamAdmin(pageable, criteria).toList();
+      events1.stream()
+              .peek(event -> event.setConfirmedRequests(requestEventRepoJpa.getConfirmedRequests(event.getId())))
+              .map(EventMapper::toEventDto)
+              .collect(Collectors.toList());
+
+        List<EventDto> events2 = events1.stream().map(e -> mapper.map(e, EventDto.class)).collect(Collectors.toList());
+
+        //Set<EventDto> events = new HashSet<>(events2);
+        log.info("  {}", events2.size());
+
+        return events2;
+    }
+
+    public Set<EventShortDto> getAllPublic(RequestParamUser param) {
+
+        LocalDateTime rangeEndLocalDateTime = param.getRangeEnd();
+        LocalDateTime rangeStartLocalDateTime = param.getRangeStart();
+
+        if (rangeStartLocalDateTime != null && rangeEndLocalDateTime != null) {
+            if (rangeEndLocalDateTime.isBefore(rangeStartLocalDateTime)) {
+                throw new BadRequestException(HttpStatus.BAD_REQUEST, "Конечная дата должна быть ранее начальной");
+            }
+        }
+
+        Pageable pageable = PageRequest.of(param.getFrom() / param.getSize(), param.getSize(), org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
+
+        CriteriaUser criteriaUser = CriteriaUser.builder().text(param.getText()).categories(param.getCategories()).rangeEnd(rangeEndLocalDateTime).rangeStart(rangeStartLocalDateTime).paid(param.getPaid()).build();
+
+        List<Event> events1 = eventRepoJpa.findByParamUser(pageable, criteriaUser).toList();
         List<EventShortDto> events2 = events1.stream().map(e -> mapper.map(e, EventShortDto.class)).collect(Collectors.toList());
 
         Set<EventShortDto> events = new HashSet<>(events2);
