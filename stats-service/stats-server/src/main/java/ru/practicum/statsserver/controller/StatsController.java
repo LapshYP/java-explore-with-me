@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.statsdto.EndpointHitDto;
 import ru.practicum.statsdto.ViewStatsDto;
-import ru.practicum.statsserver.exception.BadRequestException;
 import ru.practicum.statsserver.service.StatsService;
 
 import javax.validation.Valid;
@@ -33,10 +32,7 @@ public class StatsController {
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(required = false) LocalDateTime end,
             @RequestParam(required = false) List<String> uris,
             @RequestParam(defaultValue = "false") Boolean unique) {
-        ResponseEntity<List<ViewStatsDto>> responseEntity = new ResponseEntity<>(statsService.getStats(start, end, uris, unique), HttpStatus.OK);
-        if (responseEntity.getStatusCodeValue() != 200 && !start.isAfter(end)) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса без даты начала или без даты конца");
-        }
-        return responseEntity;
+
+        return new ResponseEntity<>(statsService.getStats(start, end, uris, unique), HttpStatus.OK);
     }
 }

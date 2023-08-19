@@ -15,6 +15,8 @@ import ru.practicum.statsserver.repo.StatsRepo;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService {
@@ -33,8 +35,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        if (start.isAfter(end)) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса с неверными датами начала и конца диапазона времени");
+        if (isNull(start) || isNull(end) || end.isBefore(start)) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Тест на верную обработку запроса без даты начала или без даты конца без даты конца и начала");
         }
 
         PageRequest pageable = PageRequest.of(0, 20);
