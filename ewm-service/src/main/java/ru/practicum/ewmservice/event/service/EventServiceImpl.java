@@ -3,10 +3,12 @@ package ru.practicum.ewmservice.event.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.category.model.Category;
@@ -21,7 +23,6 @@ import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.request.model.Request;
 import ru.practicum.ewmservice.request.model.Status;
 import ru.practicum.ewmservice.request.repossitory.RequestEventRepoJpa;
-import ru.practicum.ewmservice.stats.ServiceEwn;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
 import ru.practicum.statsclient.StatsClient;
@@ -48,14 +49,14 @@ public class EventServiceImpl implements EventService {
     private final UserRepoJpa userRepoJpa;
     private final CategoryRepoJpa categoryRepoJpa;
     private final RequestEventRepoJpa requestEventRepoJpa;
-    private final ServiceEwn serviceEwn;
+
 
     private final ModelMapper mapper = new ModelMapper();
     private final HashSet<String> requestHashSet = new HashSet<>();
-    private final HashMap<Long, HashSet<String>> httpServletRequests = new HashMap<Long, HashSet<String>>();
+    private final HashMap<Long, HashSet<String>> httpServletRequests = new HashMap<>();
 
-
-    private final StatsClient statsClient;
+    @Autowired
+    private final StatsClient statsClientImpl;
 
     @Value("${app.stats.url}")
     String serviceName;
@@ -99,7 +100,12 @@ public class EventServiceImpl implements EventService {
     public List<EventDto> getByUserId(Long userId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         log.debug("getByUserId, from = {}, size = {}", from, size);
-        return eventRepoJpa.findByUserId(userId, pageable).stream().map(event -> mapper.map(event, EventDto.class)).collect(Collectors.toList());
+        return eventRepoJpa
+                .findByUserId(userId, pageable)
+                .stream()
+                .peek(event -> event.setViews(this.getViewsById(event.getId())))
+                .map(event -> mapper.map(event, EventDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -115,7 +121,7 @@ public class EventServiceImpl implements EventService {
         }
 
         EndpointHitDto endpointHit = EndpointHitDto.builder().ip(servletRequest.getRemoteAddr()).uri(servletRequest.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
-        statsClient.saveStats(endpointHit);
+        statsClientImpl.saveStats(endpointHit);
         log.info("getAllPublic (save stats), events.size()= {}  ", event.getId());
 
         event.setViews((long) httpServletRequests.get(eventId).size());
@@ -139,7 +145,7 @@ public class EventServiceImpl implements EventService {
     public List<ParticipationRequestDto> getByUserIdRequests(Long userId) {
         List<Request> requests = requestEventRepoJpa.findByRequesterId(userId);
         log.debug("getByUserIdRequests, userId = {} ", userId);
-        return requests.stream().map(request -> getParticipationRequestDto(request)).collect(Collectors.toList());
+        return requests.stream().map(EventServiceImpl::getParticipationRequestDto).collect(Collectors.toList());
 
 
     }
@@ -453,7 +459,10 @@ public class EventServiceImpl implements EventService {
         List<EventDto> events = events1.stream().map(e -> mapper.map(e, EventDto.class)).collect(Collectors.toList());
 
         log.info("getAllAdmin, events.size() {}", events.size());
-        return events;
+        return events.stream()
+                .peek(eventDto -> eventDto.setViews(this.getViewsById(eventDto.getId())))
+                .collect(Collectors.toList());
+
     }
 
     public Set<EventShortDto> getAllPublic(RequestParamUser param) {
@@ -472,16 +481,18 @@ public class EventServiceImpl implements EventService {
         CriteriaUser criteriaUser = CriteriaUser.builder().text(param.getText()).categories(param.getCategories()).rangeEnd(rangeEndLocalDateTime).rangeStart(rangeStartLocalDateTime).paid(param.getPaid()).build();
 
         List<Event> events1 = eventRepoJpa.findByParamUser(pageable, criteriaUser).toList();
-        List<EventShortDto> events2 = events1.stream().map(e -> mapper.map(e, EventShortDto.class)).collect(Collectors.toList());
 
-        Set<EventShortDto> events = new HashSet<>(events2);
+        Set<EventShortDto> events = events1.stream().map(e -> mapper.map(e, EventShortDto.class)).collect(Collectors.toSet());
         log.info("  {}", events.size());
 
         HttpServletRequest request = param.getRequest();
         EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
-        statsClient.saveStats(endpointHit);
+        statsClientImpl.saveStats(endpointHit);
         log.info("getAllPublic (save stats), events.size()= {}  ", events.size());
-        return events;
+        return events.stream()
+                .peek(eventDtos -> eventDtos
+                        .setViews(this.getViewsById(eventDtos.getId())))
+                .collect(Collectors.toSet());
     }
 
     private static ParticipationRequestDto getParticipationRequestDto(Request request) {
@@ -493,5 +504,23 @@ public class EventServiceImpl implements EventService {
         return participationRequestDto;
     }
 
+    private Long getViewsById(Long eventId) {
+        Set<String> uris = new HashSet<>();
 
+        uris.add("/events/" + eventId);
+
+        ResponseEntity<Object> views = statsClientImpl
+                .getStats("2020-05-05 00:00:00",
+                        "2035-05-05 00:00:00",
+                        uris.stream().collect(Collectors.toList()),
+                        true);
+
+
+        String[] body = views.getBody().toString().split("\"hits\": ");
+        if (!body.equals(null) && !body[0].equals("[]")) {
+            return Long.valueOf(body[1]);
+        } else {
+            return 0L;
+        }
+    }
 }
