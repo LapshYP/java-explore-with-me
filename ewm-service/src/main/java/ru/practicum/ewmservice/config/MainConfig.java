@@ -17,4 +17,5 @@ public class MainConfig {
     public StatsClientImpl statsClient() {
         return new StatsClientImpl(new RestTemplate());
     }
+
 }
