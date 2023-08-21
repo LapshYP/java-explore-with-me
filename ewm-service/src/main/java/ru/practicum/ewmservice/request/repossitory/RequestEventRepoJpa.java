@@ -19,6 +19,7 @@ public interface RequestEventRepoJpa extends JpaRepository<Request, Long> {
 
     @Query(value = "SELECT COUNT(EVENT_ID) FROM requests WHERE  EVENT_ID=?1", nativeQuery = true)
     Long getConfirmedRequests(Long eventId);
-@Query("SELECT request From Request request WHERE request.id IN(:requestids)")
+
+    @Query("SELECT request From Request request WHERE request.id IN(:requestids)")
     List<Request> findByIds(@Param("requestids") List<Long> requestIds);
 }
