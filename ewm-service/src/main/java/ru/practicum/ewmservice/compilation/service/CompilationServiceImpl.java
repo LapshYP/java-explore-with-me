@@ -36,14 +36,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     private final ModelMapper mapper = new ModelMapper();
 
-    private void validateUser(Compilation compilation) {
-        Validator validator;
+    private void validateCompilation(Compilation compilation) {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            validator = factory.getValidator();
-        }
-        Set<ConstraintViolation<Compilation>> violations = validator.validate(compilation);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Compilation>> violations = validator.validate(compilation);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+
+            }
         }
     }
 
@@ -67,7 +67,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilation.setEvents(events);
         compilation.setPinned(false);
 
-        validateUser(compilation);
+        validateCompilation(compilation);
         Compilation savedCompilation = compilationRepoJpa.save(compilation);
         log.debug("Подборка добавлена,  id ={}  ", compilation.getId());
         return mapper.map(savedCompilation, CompilationWithIdAndEventsDto.class);
@@ -82,7 +82,7 @@ public class CompilationServiceImpl implements CompilationService {
         }).collect(Collectors.toList());
     }
 
-    @SneakyThrows
+
     @Override
     @Transactional
     public CompilationDto update(CompilationDto compilationWithEventsDto, Long catId) {
@@ -109,7 +109,7 @@ public class CompilationServiceImpl implements CompilationService {
 
         updatedCompilation.setEvents(events);
 
-        validateUser(updatedCompilation);
+        validateCompilation(updatedCompilation);
         Compilation saveCompilation = compilationRepoJpa.save(updatedCompilation);
         log.debug("Подборка обновлена, id = {} ", compilation.getId());
 

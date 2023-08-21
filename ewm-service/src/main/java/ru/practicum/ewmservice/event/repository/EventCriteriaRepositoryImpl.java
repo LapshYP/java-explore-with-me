@@ -71,7 +71,7 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
 
     private Predicate getAdminPredicate(CriteriaAdmin criteriaAdmin, Root<Event> eventRoot) {
         List<Predicate> predicates = new ArrayList<>();
-        Predicate annotationPredicate = null;
+
         if (criteriaAdmin != null && criteriaAdmin.getCategories() != null && !criteriaAdmin.getCategories().isEmpty()) {
             Join<Event, Category> categoryJoin = eventRoot.join("category");
             predicates.add(categoryJoin.get("id").in(criteriaAdmin.getCategories()));
@@ -97,11 +97,7 @@ public class EventCriteriaRepositoryImpl implements EventCriteriaRepository {
             predicates.add(criteriaBuilder.between(eventRoot.get("date"), LocalDateTime.now(), LocalDateTime.now().plusYears(100)));
         }
 
-        if (predicates.isEmpty()) {
-            return null;
-        } else {
-            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        }
+        return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
     }
 
     private Predicate getUserPredicate(CriteriaUser criteria, Root<Event> eventRoot) {

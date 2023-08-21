@@ -1,7 +1,6 @@
 package ru.practicum.ewmservice.event.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,17 +61,17 @@ public class EventServiceImpl implements EventService {
     String serviceName;
 
 
-    private void validateItem(Event event) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<Event>> violations = validator.validate(event);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+    private void validateEvent(Event event) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Event>> violations = validator.validate(event);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
 
+            }
         }
     }
 
-    @SneakyThrows
     @Transactional
     public EventDto create(EventNewDto eventNewDto, Long userId) {
         User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
@@ -88,7 +87,7 @@ public class EventServiceImpl implements EventService {
         event.setViews(0L);
 
 
-        validateItem(event);
+        validateEvent(event);
         Event createdEvent = eventRepoJpa.save(event);
         log.debug("Событие создано, id = {}, confirmedRequests = {}", event.getId(), event.getConfirmedRequests());
 
@@ -108,13 +107,14 @@ public class EventServiceImpl implements EventService {
         requestHashSet.add(servletRequest.getRemoteAddr());
         httpServletRequests.put(eventId, requestHashSet);
 
-        Event event = eventRepoJpa.findById(eventId).get();
+        Event event = eventRepoJpa.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие с id = '" + eventId + "' не найдено"));
+
         if (event.getState() != PUBLISHED && event.getState() != PUBLISH_EVENT) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Попытка получения информации о событии по публичному эндпоинту без публикации");
         }
 
-        HttpServletRequest request = servletRequest;
-        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(request.getRemoteAddr()).uri(request.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
+        EndpointHitDto endpointHit = EndpointHitDto.builder().ip(servletRequest.getRemoteAddr()).uri(servletRequest.getRequestURI()).app(serviceName).timestamp(LocalDateTime.now()).build();
         statsClient.saveStats(endpointHit);
         log.info("getAllPublic (save stats), events.size()= {}  ", event.getId());
 
@@ -250,7 +250,7 @@ public class EventServiceImpl implements EventService {
             log.debug("updateByAdmin,  стало updateEvent = {}", updateEvent.getState());
 
         }
-        validateItem(updateEvent);
+        validateEvent(updateEvent);
         log.debug("Публикация обнавлена,updateEventAdminRequest = {},eventId = {}", updateEventAdminRequest, eventId);
         Event updatedItem = eventRepoJpa.save(updateEvent);
         return mapper.map(updatedItem, EventDto.class);
@@ -345,7 +345,7 @@ public class EventServiceImpl implements EventService {
         }
 
 
-        validateItem(updateEvent);
+        validateEvent(updateEvent);
         log.debug("Публикация обнавлена,updateEventUserRequest = {},eventId = {}, userId ={}", updateEventUserRequest, eventId, userId);
         Event updatedItem = eventRepoJpa.save(updateEvent);
         return mapper.map(updatedItem, EventDto.class);
@@ -377,10 +377,10 @@ public class EventServiceImpl implements EventService {
 
 
         List<Long> requestIds = eventRequestStatusUpdateRequest.getRequestIds();
+        List<Request> requests = requestEventRepoJpa.findByIds(requestIds);
 
+        for (Request request : requests) {
 
-        for (Long requestId : requestIds) {
-            Request request = requestEventRepoJpa.findById(requestId).get();
 
             switch (Status.valueOf(eventRequestStatusUpdateRequest.getStatus())) {
                 case REJECTED:

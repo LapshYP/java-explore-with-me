@@ -32,12 +32,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final ModelMapper mapper = new ModelMapper();
 
-    private void validateUser(Category category) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<Category>> violations = validator.validate(category);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+    private void validateCategory(Category category) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Category>> violations = validator.validate(category);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+            }
         }
     }
 
@@ -46,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryDto create(CategoryDto categoryDTO) {
         Category category = mapper.map(categoryDTO, Category.class);
-        validateUser(category);
+        validateCategory(category);
         if (category.getName().length() > 50) {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
         }
@@ -81,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Name field must be <50");
         }
         updatedCategory.setId(catId);
-        validateUser(updatedCategory);
+        validateCategory(updatedCategory);
         categoryRepoJpa.save(updatedCategory);
         log.debug("Категория обновлена id = {}, name = {}", category.getId(), category.getName());
         CategoryDto updatedCategoryDto = mapper.map(updatedCategory, CategoryDto.class);

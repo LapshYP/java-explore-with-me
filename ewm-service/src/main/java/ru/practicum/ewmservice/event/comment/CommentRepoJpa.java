@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface CommentRepoJpa extends JpaRepository<Comment, Long> {
 
-    List<Comment> findAllByItemOrderById(Event event);
+
 }

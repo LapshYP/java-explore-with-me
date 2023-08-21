@@ -16,8 +16,10 @@ import ru.practicum.ewmservice.request.repossitory.RequestEventRepoJpa;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
 
+import javax.validation.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static ru.practicum.ewmservice.event.model.State.PENDING;
 
@@ -29,6 +31,16 @@ public class RequestEventServiceImpl implements RequestEventService {
     private final RequestEventRepoJpa requestEventRepoJpa;
     private final EventRepoJpa eventRepoJpa;
     private final UserRepoJpa userRepoJpa;
+
+    private void validateRequest(Request request) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Request>> violations = validator.validate(request);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+            }
+        }
+    }
 
     @Override
     @Transactional
@@ -62,6 +74,7 @@ public class RequestEventServiceImpl implements RequestEventService {
         request.setDescription("event");
         log.debug("Запрос на участие создан, eventId = {},userId = {}   ", eventId, userId);
         request.setEvent(event);
+        validateRequest(request);
         Request saved = requestEventRepoJpa.save(request);
         return RequestDto.builder()
                 .id(saved.getId())
