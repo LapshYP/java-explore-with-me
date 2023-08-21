@@ -1,4 +1,4 @@
-package ru.practicum.ewmservice.stats;
+package ru.practicum.ewmservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
