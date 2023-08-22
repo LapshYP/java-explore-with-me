@@ -1,0 +1,52 @@
+spring:
+  profiles:
+    active: dev
+  application.name: main-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.PostgreSQL10Dialect
+      format_sql: true
+  sql.init.mode: always
+server:
+  port: 8080
+
+app:
+  stats:
+    url: http://localhost:9090
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  #spring.config.activate.on-profile=default,ci,test
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:ewm
+    username: test
+    password: test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:file:./db/explore
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+logging:
+  level:
+    ru:
+      practicum:
+        ewmservice: debug
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
