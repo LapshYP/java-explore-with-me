@@ -1,6 +1,6 @@
 # java-explore-with-me
 ⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀
-Ссылка на Pull Request:  
+Ссылка на Pull Request:  https://github.com/LapshYP/java-explore-with-me/pull/6#issue-1863909206
 ⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀
 sergeya.lapshin@gmail.com
 ⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀
