@@ -46,7 +46,7 @@ public class CommentUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public CommentAdminDto deleteByAdmin(@PathVariable @PositiveOrZero Long comId) {
         log.info("deleteByAdmin DELETE /admin/comments/{comId} , comId= {}", comId);
-     return    commentService.deleteByAdmin(comId);
+        return commentService.deleteByAdmin(comId);
 
     }
 
@@ -62,16 +62,17 @@ public class CommentUserController {
     @GetMapping("/admin/comments/event/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public List<CommentAdminDto> getAdminAllComments(@PathVariable @PositiveOrZero Long eventId,
-                                               @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                               @RequestParam(defaultValue = "10") @Positive int size) {
+                                                     @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                     @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("GET /admin/comments/event/{eventId}, eventId = {}, from={} , size={}", eventId, eventId, from, size);
         return commentService.getAdminAllComments(eventId, from, size);
     }
+
     @GetMapping("/comments/event/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public List<CommentUserDto> getUserAllComments(@PathVariable @PositiveOrZero Long eventId,
-                                               @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                               @RequestParam(defaultValue = "10") @Positive int size) {
+                                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                   @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("GET /comments/event/{eventId}, eventId = {}, from={} , size={}", eventId, eventId, from, size);
         return commentService.getUserAllComments(eventId, from, size);
     }
@@ -80,17 +81,19 @@ public class CommentUserController {
     @GetMapping("/comments/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentUserDto getUserCommentById(@PathVariable("userId") @Positive Long userId,
-                                     @PathVariable("comId") @Positive Long comId) {
+                                             @PathVariable("comId") @Positive Long comId) {
         log.info("getByIdForUser ПУ {} пользователем с ID = {}.", comId, userId);
         return commentService.getUserCommentById(userId, comId);
     }
+
     @GetMapping("/admin/comments/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentAdminDto getAdminCommentById(@PathVariable("userId") @Positive Long userId,
-                                     @PathVariable("comId") @Positive Long comId) {
+                                               @PathVariable("comId") @Positive Long comId) {
         log.info("getByIdForUser ПУ {} пользователем с ID = {}.", comId, userId);
         return commentService.getAdminCommentById(userId, comId);
     }
+
     @GetMapping("/admin/comments/events/{eventId}")
     public ResponseEntity<CommentEvent> getAdminCommentsByEventId(@PathVariable Long eventId) {
         log.info("getById GET /events/{id} , id = {}, servletRequest = {} ", eventId);
