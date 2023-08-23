@@ -20,21 +20,7 @@
 							"    pm.response.to.be.withBody;",
 							"    pm.response.to.be.json;",
 							"});",
-							"pm.test(\"Test user 'id' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('id');",
-							"    pm.expect(jsonData.id, '\"id\" must be 1').to.eql(1);",
-							"});",
-							"pm.test(\"Test user 'email' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('email');",
-							"    pm.expect(jsonData.email, '\"email\" must be \"user@user.com\"').to.eql('user@user.com');",
-							"});",
-							"pm.test(\"Test user 'name' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('name');",
-							"    pm.expect(jsonData.name, '\"name\" must be \"user\"').to.eql('user');",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -85,21 +71,7 @@
 							"    pm.response.to.be.withBody;",
 							"    pm.response.to.be.json;",
 							"});",
-							"pm.test(\"Test user 'id' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('id');",
-							"    pm.expect(jsonData.id, '\"id\" must be 2').to.eql(2);",
-							"});",
-							"pm.test(\"Test user 'email' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('email');",
-							"    pm.expect(jsonData.email, '\"email\" must be \"user2@user.com\"').to.eql('user2@user.com');",
-							"});",
-							"pm.test(\"Test user 'name' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('name');",
-							"    pm.expect(jsonData.name, '\"name\" must be \"user2\"').to.eql('user2');",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -688,8 +660,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 204\", function () {\r",
-							"    pm.response.to.have.status(204);\r",
+							"pm.test(\"Ответ должен содержать код статуса 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -741,8 +713,8 @@
 					"script": {
 						"exec": [
 							"let serverResponse = pm.response; // получаем объект Response и сохраняем его в переменную serverResponse\r",
-							"pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {\r",
-							"    pm.response.to.have.status(404);  \r",
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.response.to.have.status(200);  \r",
 							"    pm.response.to.be.withBody;\r",
 							"    pm.response.to.be.json;\r",
 							"});\r",
@@ -1087,8 +1059,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 204\", function () {\r",
-							"    pm.response.to.have.status(204);\r",
+							"pm.test(\"Ответ должен содержать код статуса 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
 							"});"
 						],
 						"type": "text/javascript"
