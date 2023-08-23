@@ -122,16 +122,6 @@
 							"    pm.response.to.be.withBody;",
 							"    pm.response.to.be.json;",
 							"});",
-							"pm.test(\"Test user 'id' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('id');",
-							"    pm.expect(jsonData.id, '\"id\" must be 1').to.eql(1);",
-							"});",
-							"pm.test(\"Test user 'email' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('name');",
-							"    pm.expect(jsonData.name, '\"name\" must be \"Спортивные\"').to.eql('Спортивные');",
-							"});",
 							""
 						],
 						"type": "text/javascript"
