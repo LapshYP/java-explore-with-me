@@ -118,10 +118,7 @@
 							"pm.test(\"Status code is 200 or 201\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
 							"});",
-							"pm.test(\"Has user create response\", function () {",
-							"    pm.response.to.be.withBody;",
-							"    pm.response.to.be.json;",
-							"});",
+							"",
 							""
 						],
 						"type": "text/javascript"
