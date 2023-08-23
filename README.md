@@ -1,3 +1,6 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀
+Ссылка на Pull Request: https://github.com/LapshYP/java-explore-with-me/pull/5#issue-1863820726
+⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀
 sergeya.lapshin@gmail.com
+⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀⨀‿⨀
