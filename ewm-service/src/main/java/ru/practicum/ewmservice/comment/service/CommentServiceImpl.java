@@ -22,10 +22,11 @@ import ru.practicum.ewmservice.exception.BadRequestException;
 import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
-import ru.practicum.ewmservice.user.service.UserService;
 
+import javax.validation.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ru.practicum.ewmservice.event.model.State.PUBLISHED;
@@ -39,10 +40,20 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepoJpa userRepoJpa;
     private final CommentRepoJpa commentRepoJpa;
     private final EventRepoJpa eventRepoJpa;
-    private final UserService userService;
+
     private final ModelMapper mapper = new ModelMapper();
     private ModelMapper mapperCast;
 
+    private void validateComment(Comment comment) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+
+            }
+        }
+    }
 
     @Override
     @Transactional
@@ -63,17 +74,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         comment.setCreatedtime(LocalDateTime.now());
         comment.setIsdeleted(false);
-//        if (event.getComments() == null) {
-//            event.setComments(List.of(comment));
-//            eventRepoJpa.save(event);
-//        } else {
-//            List<Comment> comments = event.getComments();
-//            comments.add(comment);
-//            event.setComments(comments);
-//            eventRepoJpa.save(event);
-//        }
-
-
+        validateComment(comment);
         Comment result = commentRepoJpa.save(comment);
         log.info("create, result.getId() =  {}, commentRepoJpa.size = {}", result.getId(), commentRepoJpa.findAll().size());
 
@@ -120,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
                 .editedtime(LocalDateTime.now())
                 .isdeleted(commentFromDb.getIsdeleted())
                 .build();
-
+        validateComment(comment);
         Comment result = commentRepoJpa.save(comment);
 
         log.info("Выполнено обновление комментария с ID = {}.", comId);
