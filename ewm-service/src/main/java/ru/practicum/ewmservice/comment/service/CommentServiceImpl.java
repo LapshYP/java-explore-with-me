@@ -50,7 +50,6 @@ public class CommentServiceImpl implements CommentService {
             Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
             if (!violations.isEmpty()) {
                 throw new ConstraintViolationException(violations);
-
             }
         }
     }
@@ -103,7 +102,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentNew updateComment(Long comId, Long userId, CommentUserDto inputCommentDto) {
-        User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
+        userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         Comment commentFromDb = commentRepoJpa.findById(comId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Комментарий с id = '" + comId + "' не найден"));
         if (commentFromDb.getIsdeleted().equals(true)) {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Невозможно обновить удаленный комментарий");
@@ -169,7 +168,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentAdminDto getAdminCommentById(Long userId, Long comId) {
-        User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
+        userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
 
         Comment commentFromDb = commentRepoJpa.findById(comId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Комментарий с id = '" + comId + "' не найден"));
 
@@ -180,7 +179,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentUserDto getUserCommentById(Long userId, Long comId) {
-        User user = userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
+        userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         Comment commentFromDb = commentRepoJpa.findById(comId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Комментарий с id = '" + comId + "' не найден"));
         if (commentFromDb.getIsdeleted().equals(true)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Комментарий с id = '" + comId + "' не найден");
