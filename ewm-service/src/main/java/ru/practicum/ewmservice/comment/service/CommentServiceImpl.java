@@ -110,7 +110,6 @@ public class CommentServiceImpl implements CommentService {
         if (inputCommentDto.getText() == null || inputCommentDto.getText().isBlank()) {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Текст комментария не должен быть пустым");
         }
-
         Comment comment = Comment.builder()
                 .id(commentFromDb.getId())
                 .text(inputCommentDto.getText())
