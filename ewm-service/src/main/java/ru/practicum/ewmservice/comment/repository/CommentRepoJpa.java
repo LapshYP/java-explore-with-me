@@ -21,4 +21,7 @@ public interface CommentRepoJpa extends JpaRepository<Comment, Long> {
 
     @Query(value = " SELECT COUNT(events.ID) FROM events LEFT JOIN comments ON events.ID = comments.event_id WHERE events.id=?1", nativeQuery = true)
     Long getCommentsCountByEventId(Long eventId);
+
+    @Query(value = " SELECT COUNT(events.ID) FROM events LEFT JOIN comments ON events.ID = comments.event_id WHERE events.id=?1 AND comments.id=?2 AND comments.author_id=?3", nativeQuery = true)
+    Long getCommentsCountByEventIdAndUserId(Long eventId,Long comId, Long userId);
 }

@@ -103,16 +103,17 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentNew updateComment(Long comId, Long userId, CommentUserDto inputCommentDto) {
-
-        Event event = eventRepoJpa.findById(inputCommentDto.getEventId())
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие с id = '" + inputCommentDto.getEventId() + "' не найдено"));
-
-        if (event.getId() != inputCommentDto.getEventId()) {
-            throw new ConflictException("Редактировать можно только свой комментарий");
-        }
-
         userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         Comment commentFromDb = commentRepoJpa.findById(comId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Комментарий с id = '" + comId + "' не найден"));
+
+        Event event = eventRepoJpa.findById(commentFromDb.getEvent().getId())
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие с id = '" + inputCommentDto.getEventId() + "' не найдено"));
+
+
+        if (commentRepoJpa.getCommentsCountByEventIdAndUserId(event.getId(), comId, userId) != 1) {
+            throw new ConflictException("Редактировать можно только свой существующий комментарий");
+        }
+
         if (commentFromDb.getIsdeleted().equals(true)) {
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Невозможно обновить удаленный комментарий");
         }
