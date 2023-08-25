@@ -19,6 +19,7 @@ import ru.practicum.ewmservice.comment.repository.CommentRepoJpa;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepoJpa;
 import ru.practicum.ewmservice.exception.BadRequestException;
+import ru.practicum.ewmservice.exception.ConflictException;
 import ru.practicum.ewmservice.exception.NotFoundException;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepoJpa;
@@ -102,6 +103,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentNew updateComment(Long comId, Long userId, CommentUserDto inputCommentDto) {
+
+        Event event = eventRepoJpa.findById(inputCommentDto.getEventId())
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Событие с id = '" + inputCommentDto.getEventId() + "' не найдено"));
+
+        if (event.getId() != inputCommentDto.getEventId()) {
+            throw new ConflictException("Редактировать можно только свой комментарий");
+        }
+
         userRepoJpa.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id = '" + userId + "' не найден"));
         Comment commentFromDb = commentRepoJpa.findById(comId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "Комментарий с id = '" + comId + "' не найден"));
         if (commentFromDb.getIsdeleted().equals(true)) {
