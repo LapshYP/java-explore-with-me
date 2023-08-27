@@ -3,6 +3,7 @@ package ru.practicum.ewmservice.event.model;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.ewmservice.category.model.Category;
+import ru.practicum.ewmservice.comment.model.Comment;
 import ru.practicum.ewmservice.compilation.model.Compilation;
 import ru.practicum.ewmservice.user.model.User;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -83,6 +85,9 @@ public class Event {
 
     @ManyToMany(mappedBy = "events")
     private Set<Compilation> compilations = new HashSet<>();
+
+    @OneToMany(mappedBy = "event")
+    private List<Comment> comments;
 
     @Override
     public boolean equals(Object o) {
